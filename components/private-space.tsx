@@ -1,7 +1,7 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import QRCode from 'qrcode';
-import { Fingerprint, LockKeyhole, KeyRound, LogOut, Plus, Download, ArrowLeft, Smartphone } from 'lucide-react';
+import { Fingerprint, LockKeyhole, KeyRound, LogOut, Plus, Download, ArrowLeft, Smartphone, X } from 'lucide-react';
 type User = { id:string; handle:string };
 type Note = { id:string; title:string; content:string; updated_at:string };
 type Key = { id:string; name:string; storage:string; created_at:string; public_key:string };
@@ -18,6 +18,8 @@ export default function PrivateSpace() {
   const [busy,setBusy]=useState(false), [loading,setLoading]=useState(true), [supported,setSupported]=useState(true), [message,setMessage]=useState(''), [error,setError]=useState(false), [audit,setAudit]=useState<Audit[]>([]);
   const [deleting,setDeleting]=useState<string|null>(null), [editing,setEditing]=useState<Note|null>(null);
   const [pair,setPair]=useState<{pairId:string;qr:string;expiresAt:number}|null>(null);
+  const qrDialog=useRef<HTMLDialogElement>(null);
+  const qrReturnFocus=useRef<HTMLElement|null>(null);
   async function api(path:string, method='GET', request?:unknown) {
     const response=await fetch(path,{method,credentials:'same-origin',cache:'no-store',headers:request?{'Content-Type':'application/json'}:undefined,body:request?JSON.stringify(request):undefined});
     const data:any=await response.json();
@@ -31,9 +33,15 @@ export default function PrivateSpace() {
   }
   useEffect(()=>{setSupported(window.isSecureContext);refresh().catch(e=>{setMessage(e.message);setError(true);}).finally(()=>setLoading(false));},[]);
   useEffect(()=>{
+    const dialog=qrDialog.current;if(!pair||!dialog)return;
+    const previousFocus=qrReturnFocus.current??document.activeElement;dialog.showModal();const previousOverflow=document.body.style.overflow;document.body.style.overflow='hidden';
+    return()=>{if(dialog.open)dialog.close();document.body.style.overflow=previousOverflow;if(previousFocus instanceof HTMLElement&&previousFocus.isConnected)previousFocus.focus();};
+  },[pair]);
+  useEffect(()=>{
     if(!pair)return;let ended=false,inFlight=false;
     const check=async()=>{if(ended||inFlight)return;inFlight=true;try{
       const status=await api('/api/phone-pair/status?id='+pair.pairId);
+      if(ended)return;
       if(status.state==='ready'){ended=true;await api('/api/phone-pair/consume','POST',{pairId:pair.pairId});setPair(null);await refresh();setMessage('휴대폰에서 인증했습니다. 비공개 공간이 열렸습니다.');setError(false);setKeyName('내 예비 패스키');}
     }catch(e){ended=true;setPair(null);setMessage((e as Error).message);setError(true);}finally{inFlight=false;}};
     const timer=window.setInterval(check,1500);check();return()=>{ended=true;window.clearInterval(timer);};
@@ -43,6 +51,7 @@ export default function PrivateSpace() {
     window.addEventListener('focus',relock); const interval=window.setInterval(relock,60000); return()=>{window.removeEventListener('focus',relock);window.clearInterval(interval);};
   },[]);
   async function authenticate(register:boolean) {
+    qrReturnFocus.current=document.activeElement instanceof HTMLElement?document.activeElement:null;
     setBusy(true);setMessage('');setError(false);
     try {
       if(!supported) throw new Error('HTTPS 공개 주소에서 다시 열어주세요.');
@@ -55,7 +64,7 @@ export default function PrivateSpace() {
       setMessage(err.message||'QR 연결을 시작하지 못했습니다. 다시 시도하세요.');
     } finally {setBusy(false);}
   }
-  async function cancelPair(){await api('/api/phone-pair/cancel','POST',{}).catch(()=>{});setPair(null);setMessage('휴대폰 연결을 취소했습니다.');setError(false);}
+  async function cancelPair(){setPair(null);setMessage('휴대폰 연결을 취소했습니다.');setError(false);await api('/api/phone-pair/cancel','POST',{}).catch(()=>{});}
   async function logout() {
     setBusy(true);try {await api('/api/passkey/logout','POST',{});setUser(null);setNotes([]);setKeys([]);setEditing(null);setMessage('로그아웃했습니다. 비공개 공간이 잠겼습니다.');setError(false);}catch(e){setMessage((e as Error).message);setError(true);}finally{setBusy(false);}
   }
@@ -72,7 +81,18 @@ export default function PrivateSpace() {
     <nav className="private-nav"><a href="/"><ArrowLeft size={17}/> 공개 소개로 돌아가기</a><span><LockKeyhole size={16}/> 비공개 공간</span></nav>
     <header className="private-header"><p className="eyebrow">PRIVATE NOTES</p><h1>나만의 준비 공간</h1><p>프로젝트를 준비하고, 다음 걸음을 적어두는 자리.</p><span className={`lock-badge ${user?'open':''}`}><LockKeyhole size={15}/>{user?'패스키 인증 완료':'패스키로 잠겨 있어요'}</span></header>
     {message&&<p role={error?'alert':'status'} className={`private-message ${error?'error':''}`}>{message}</p>}
-    {pair&&<section className="private-card qr-card" aria-label="휴대폰 연결 QR코드"><div><p className="eyebrow">PHONE CONNECT</p><h2>휴대폰 카메라로 스캔하세요</h2><p>휴대폰에서 열린 페이지의 지문 인증 버튼을 누르면<br/>이 PC 화면이 자동으로 열립니다.</p><p className="qr-time">{new Date(pair.expiresAt).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',timeZone:'Asia/Seoul'})}까지 유효 · 한 번만 사용할 수 있습니다.</p><button className="private-secondary" onClick={cancelPair}>QR 연결 취소</button></div><img src={pair.qr} width={280} height={280} alt="휴대폰 지문 인증 페이지로 연결하는 일회용 QR코드"/></section>}
+    {pair&&<dialog ref={qrDialog} className="qr-dialog" aria-modal="true" aria-labelledby="qr-popup-title" aria-describedby="qr-popup-description" onCancel={e=>{e.preventDefault();void cancelPair();}} onClick={e=>{if(e.target!==e.currentTarget)return;const box=e.currentTarget.getBoundingClientRect();if(e.clientX<box.left||e.clientX>box.right||e.clientY<box.top||e.clientY>box.bottom)void cancelPair();}}>
+      <div className="qr-popup-card">
+        <button className="qr-popup-close" type="button" aria-label="QR 팝업 닫기" onClick={cancelPair} autoFocus><X size={22}/></button>
+        <span className="qr-popup-icon"><Smartphone size={24}/></span><p className="eyebrow">PHONE CONNECT</p>
+        <h2 id="qr-popup-title">휴대폰으로 스캔하세요</h2>
+        <p id="qr-popup-description">휴대폰 카메라로 QR을 스캔하고<br/>열린 페이지에서 지문을 확인해주세요.</p>
+        <img src={pair.qr} width={280} height={280} alt="휴대폰 지문 인증 페이지로 연결하는 일회용 QR코드"/>
+        <p className="qr-popup-waiting" role="status"><span/>휴대폰 인증을 기다리고 있어요</p>
+        <p className="qr-popup-expiry">{new Date(pair.expiresAt).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',timeZone:'Asia/Seoul'})}까지 유효 · 한 번만 사용할 수 있어요</p>
+        <button className="private-secondary" type="button" onClick={cancelPair}>연결 취소</button>
+      </div>
+    </dialog>}
     {loading?<section className="private-card"><p role="status">로그인 상태를 확인하고 있습니다…</p></section>:!user?<section className="private-card auth-card">
       <div className="auth-symbol"><Fingerprint size={42}/></div><h2>휴대폰 지문으로 들어오세요</h2><p>휴대폰에 저장한 패스키로 이 공간을 엽니다.</p>
       <ol className="phone-steps"><li><Smartphone size={17}/><span><strong>QR코드 띄우기</strong>아래에 별명을 입력하고 QR코드 버튼을 누르세요.</span></li><li><span className="step-digit">2</span><span><strong>휴대폰 카메라로 스캔</strong>PC와 휴대폰이 인터넷에 연결되어 있으면 됩니다.</span></li><li><Fingerprint size={17}/><span><strong>휴대폰에서 지문 확인</strong>휴대폰에 열린 페이지에서 인증하면 PC 화면이 열립니다.</span></li></ol>
