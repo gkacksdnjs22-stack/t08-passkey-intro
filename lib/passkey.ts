@@ -66,23 +66,27 @@ async function consume(req: Request, id: unknown, kinds: string[]) {
 async function options(req: Request, action: string, input: Row) {
   const { rpID } = config(req); const s = await session(req,false);
   const pair=input.pairTicket?await pairByTicket(input.pairTicket):null;
+  const manager=!pair&&input.channel==='manager';
   const flow = random(), id = random(); let kind: string, userId: string, userHandle: string, name = '', storage = '', sessionHash = null;
   let result;
   if (action === 'register-options') {
     if(pair&&pair.mode==='login')throw new HttpError(403,'이 QR은 로그인용입니다.');
     name = text(pair?.name??input.name,'패스키 이름'); storage = text(pair?.storage??input.storage,'저장 위치');
-    if (!['구글 비밀번호 관리자','기기 자체','보안 키','기타 패스키 관리자'].includes(storage)) throw new HttpError(400,'저장 위치를 선택하세요.');
+    if (!['구글 비밀번호 관리자','기기 자체','보안 키','기타 패스키 관리자','Bitwarden'].includes(storage)) throw new HttpError(400,'저장 위치를 선택하세요.');
+    if(manager&&(!s||storage!=='Bitwarden'))throw new HttpError(403,'휴대폰 패스키로 먼저 로그인한 뒤 Bitwarden 예비 키를 추가하세요.');
     kind = pair?(pair.mode==='add'?'add':'signup'):(s?'add':'signup'); userId=pair?.user_id??s?.user_id??crypto.randomUUID();userHandle=pair?.handle??s?.handle??handle(input.handle);sessionHash=pair?pair.session_hash:(s?.hash??null);
     if (kind==='signup' && await db().prepare('SELECT id FROM passkey_users WHERE handle=?').bind(userHandle).first()) throw new HttpError(409,'이미 사용 중인 별명입니다. 기존 패스키로 들어오거나 다른 별명을 쓰세요.');
     const keys = kind==='add' ? (await db().prepare('SELECT id,transports FROM passkeys WHERE user_id=? AND revoked_at IS NULL').bind(userId).all<Row>()).results : [];
-    result = await generateRegistrationOptions({ rpName:'함찬원의 비공개 노트', rpID, userName:userHandle, userID:new TextEncoder().encode(userId), attestationType:'none', timeout:120000, preferredAuthenticatorType:storage==='보안 키'?'securityKey':pair?'localDevice':'remoteDevice', supportedAlgorithmIDs:[-7,-257], excludeCredentials:keys.map(k=>({ id:k.id, transports:JSON.parse(k.transports) })), authenticatorSelection:{residentKey:'required',userVerification:'required'} });
+    result = await generateRegistrationOptions({ rpName:'함찬원의 비공개 노트', rpID, userName:userHandle, userID:new TextEncoder().encode(userId), attestationType:'none', timeout:120000, ...(manager?{}:{preferredAuthenticatorType:storage==='보안 키'?'securityKey' as const:pair?'localDevice' as const:'remoteDevice' as const}), supportedAlgorithmIDs:[-7,-257], excludeCredentials:keys.map(k=>({ id:k.id, transports:JSON.parse(k.transports) })), authenticatorSelection:{residentKey:'required',userVerification:'required'} });
   } else {
     if(pair&&pair.mode!=='login')throw new HttpError(403,'이 QR은 등록용입니다.');
+    if(manager)storage='Bitwarden';
     kind = 'login'; userHandle = pair?.handle??handle(input.handle);
     const u = await db().prepare('SELECT id FROM passkey_users WHERE handle=?').bind(userHandle).first<Row>(); userId = u?.id ?? 'missing';
-    const keys = u ? (await db().prepare('SELECT id,transports FROM passkeys WHERE user_id=? AND revoked_at IS NULL').bind(u.id).all<Row>()).results : [];
-    const authentication = await generateAuthenticationOptions({ rpID, timeout:120000, userVerification:'required', allowCredentials:keys.length ? keys.map(k=>({id:k.id,transports:pair?JSON.parse(k.transports):['hybrid']})) : [{id:random()}] });
-    result = { ...authentication, hints:[pair?'client-device':'hybrid'] };
+    const owned = u ? (await db().prepare('SELECT id,transports,storage FROM passkeys WHERE user_id=? AND revoked_at IS NULL').bind(u.id).all<Row>()).results : [];
+    const keys=manager?owned.filter(k=>k.storage==='Bitwarden'):owned;
+    const authentication = await generateAuthenticationOptions({ rpID, timeout:120000, userVerification:'required', allowCredentials:keys.length ? keys.map(k=>({id:k.id,...(manager?{}:{transports:pair?JSON.parse(k.transports):['hybrid']})})) : [{id:random()}] });
+    result = manager?authentication:{ ...authentication, hints:[pair?'client-device':'hybrid'] };
   }
   await db().batch([
     db().prepare('DELETE FROM passkey_challenges WHERE expires_at<=? OR browser_hash=?').bind(now(),await hash(cookie(req,FLOW_COOKIE))),
@@ -119,6 +123,7 @@ async function login(req: Request, input: Row) {
   const c = await consume(req,input.flowId,['login']); const { origin,rpID } = config(req);
   const k = await db().prepare('SELECT * FROM passkeys WHERE id=? AND user_id=? AND revoked_at IS NULL').bind(input.credential?.id ?? '',c.user_id).first<Row>();
   if (!k) throw new HttpError(401,'패스키를 확인하지 못했습니다. 별명과 패스키를 확인하세요.');
+  if(c.storage==='Bitwarden'&&k.storage!=='Bitwarden')throw new HttpError(401,'이 로그인에는 등록한 Bitwarden 예비 패스키를 사용하세요.');
   if (input.credential?.response?.userHandle && input.credential.response.userHandle !== encode(new TextEncoder().encode(c.user_id))) throw new HttpError(401,'패스키를 확인하지 못했습니다.');
   let verified;
   try { verified = await verifyAuthenticationResponse({response:input.credential,expectedChallenge:c.challenge,expectedOrigin:origin,expectedRPID:rpID,credential:{id:k.id,publicKey:decode(k.public_key),counter:k.counter,transports:JSON.parse(k.transports) as AuthenticatorTransport[]},requireUserVerification:true}); } catch { throw new HttpError(401,'패스키 서명이 거절됐습니다. 다시 시도하세요.'); }
