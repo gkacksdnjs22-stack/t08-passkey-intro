@@ -616,3 +616,54 @@ button:focus-visible {
     min-height: 36px;
   }
 }
+
+.eyebrow { color:#0f766e; font-size:.8rem; font-weight:800; letter-spacing:.12em; }
+.private-entry { display:flex; align-items:center; justify-content:space-between; gap:24px; border-block:1px solid #d9e3e0; background:#eaf3ef; }
+.private-entry h2 { display:flex; align-items:center; gap:10px; margin:10px 0; font-size:1.6rem; font-weight:800; }
+.private-entry p:last-child { color:#53615f; line-height:1.7; }
+.private-primary,.private-secondary { display:inline-flex; align-items:center; justify-content:center; gap:9px; min-height:44px; padding:11px 18px; border-radius:8px; font-weight:700; cursor:pointer; }
+.private-primary { background:#0f766e; color:white; }
+.private-primary:hover { background:#115e59; }
+.private-secondary { background:white; border:1px solid #c8d8d3; color:#264c44; }
+button:disabled { cursor:wait; opacity:.55; }
+.private-page { max-width:1100px; margin:0 auto; padding:28px 24px 56px; }
+.private-nav { display:flex; justify-content:space-between; gap:12px; color:#4d6860; font-size:.9rem; }
+.private-nav a,.private-nav span { display:flex; align-items:center; gap:8px; }
+.private-header { padding:56px 0 32px; }
+.private-header h1 { margin:14px 0 12px; font-size:clamp(2.1rem,5vw,3.5rem); font-weight:850; letter-spacing:-.045em; color:#14211f; }
+.private-header>p:last-of-type { color:#58706c; line-height:1.7; }
+.lock-badge { display:inline-flex; align-items:center; gap:7px; margin-top:20px; padding:7px 11px; border-radius:30px; background:#fff1d4; color:#806015; font-size:.82rem; font-weight:700; }
+.lock-badge.open { background:#d9ece3; color:#205e45; }
+.private-card { border:1px solid #d9e3e0; border-radius:14px; padding:28px; background:#fff; box-shadow:0 12px 30px rgb(20 33 31 / 3%); }
+.private-card h2 { font-size:1.35rem; font-weight:800; line-height:1.4; }
+.private-card p { line-height:1.75; color:#53615f; }
+.auth-card { max-width:600px; margin:auto; padding:clamp(22px,5vw,40px); }
+.auth-symbol { width:72px; height:72px; background:#edf6f4; border-radius:20px; display:grid; place-items:center; color:#0f766e; margin-bottom:22px; }
+.auth-card>p { margin-top:8px; }
+.phone-steps { display:grid; gap:14px; margin:24px 0; padding:20px; border-radius:10px; background:#edf6f4; list-style:none; }.phone-steps li { display:flex; gap:12px; align-items:flex-start; font-size:.82rem; line-height:1.7; color:#58706c; }.phone-steps svg { flex-shrink:0; margin-top:3px; color:#0f766e; }.phone-steps strong { display:block; color:#234c42; font-size:.88rem; }.step-digit { width:17px; flex-shrink:0; font-weight:800; color:#0f766e; }.biometric-note { margin-top:7px; }
+.auth-tabs { display:flex; gap:6px; padding:5px; margin:24px 0; border-radius:9px; background:#edf3f1; }
+.auth-tabs button { flex:1; padding:11px 8px; font-size:.9rem; font-weight:700; border-radius:7px; }
+.auth-tabs button[aria-pressed=true] { background:#fff; box-shadow:0 2px 6px rgb(20 33 31 / 7%); color:#0f766e; }
+.private-page form,.edit-note { display:grid; gap:9px; }
+.private-page label { margin-top:10px; font-size:.92rem; font-weight:700; color:#284d44; }
+.private-page input,.private-page select,.private-page textarea { width:100%; min-height:46px; padding:11px 13px; border:1px solid #bed1c9; border-radius:8px; background:#fff; color:#14211f; }
+.private-page textarea { min-height:150px; }
+.private-page input:focus-visible,.private-page select:focus-visible,.private-page textarea:focus-visible { outline:3px solid #f3c969; outline-offset:2px; }
+.private-page small { color:#647a72; font-size:.82rem; line-height:1.6; }
+.private-page form>.private-primary { margin-top:15px; }
+.lost-note { border-top:1px solid #d9e3e0; padding-top:24px; margin-top:28px; }
+.lost-note strong { font-size:.92rem; color:#294c43; }
+.lost-note p { margin-top:7px; font-size:.88rem; }
+.private-message { padding:15px 18px; border-radius:10px; background:#e4f2e9; border:1px solid #c1decf; margin-bottom:24px; line-height:1.7; color:#20543e; }
+.private-message.error { color:#8e3428; border-color:#edccbd; background:#fff2eb; }
+.private-account { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:16px; }
+.private-account div { display:grid; gap:6px; }.private-account strong { font-size:1.2rem; }.private-account span { color:#53615f; font-size:.87rem; }
+.fiction-note { font-size:.85rem; color:#776136; line-height:1.7; margin:16px 0 24px; }
+.private-notes { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+.note-card { display:flex; flex-direction:column; gap:16px; }.note-card p { flex:1; white-space:pre-wrap; overflow-wrap:anywhere; }.note-number { font-size:.8rem; color:#0f766e; font-weight:800; }
+.key-panel,.edit-note { margin-top:28px; }.key-panel-heading { display:flex; align-items:flex-start; gap:12px; color:#0f766e; }.key-panel-heading p { margin-top:7px; font-size:.9rem; }
+.key-list { margin:24px 0; list-style:none; }.key-list li { display:flex; align-items:flex-start; gap:16px; justify-content:space-between; padding:20px 0; border-top:1px solid #d9e3e0; }.key-list li>div { min-width:0; }.key-list span { display:block; margin-top:6px; color:#647a72; font-size:.85rem; }.key-list details { margin-top:10px; font-size:.85rem; }.key-list summary { cursor:pointer; color:#0f766e; }.key-list code { display:block; overflow-wrap:anywhere; margin:12px 0; padding:12px; background:#edf6f4; border-radius:8px; }.key-list details p { font-size:.8rem; }
+.key-delete { padding:9px 13px; border:1px solid #e8cbbf; border-radius:8px; color:#94412e; background:#fff8f4; cursor:pointer; flex-shrink:0; }
+.add-key { max-width:500px; border-top:1px solid #d9e3e0; padding-top:24px; }.add-key h3 { display:flex; gap:8px; align-items:center; font-weight:700; }.private-actions { display:flex; gap:12px; margin-top:14px; }.delete-confirm { padding:20px; margin-bottom:24px; background:#fff1e8; border:1px solid #edc8b1; border-radius:9px; }.delete-confirm p { margin-top:8px; }
+.private-footer { display:flex; justify-content:space-between; align-items:center; gap:20px; padding-top:32px; margin-top:32px; border-top:1px solid #d9e3e0; font-size:.82rem; color:#647a72; line-height:1.7; }.private-footer button { flex-shrink:0; }
+@media(max-width:700px) { .private-entry,.private-footer { align-items:flex-start; flex-direction:column; }.private-notes { grid-template-columns:1fr; }.private-header { padding-top:40px; }.private-page { padding-inline:18px; }.private-card { padding:22px; }.private-nav { font-size:.8rem; } }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ExternalLink, FileVideo, ShieldCheck } from 'lucide-react';
+import { ExternalLink, FileVideo, ShieldCheck, LockKeyhole, ArrowRight } from 'lucide-react';
 
 const learningItems = [
   'Packet Tracer로 네트워크망 구성하기',
@@ -86,6 +86,7 @@ export default function Home() {
             <a href="#video">영상</a>
             <a href="#privacy">공개 범위</a>
             <a href="#checks">점검</a>
+            <a href="/private">비공개 공간</a>
           </nav>
 
           <div id="intro" className="space-y-6">
@@ -179,6 +180,10 @@ export default function Home() {
         </aside>
       </section>
 
+      <section className="section-wrap private-entry">
+        <div><p className="eyebrow">T08 · 패스키</p><h2><LockKeyhole aria-hidden="true"/> 나만의 준비 공간</h2><p>공개 소개와 별도로, 내 계정만 볼 수 있는 노트를 준비했습니다.</p></div>
+        <a className="private-primary" href="/private">휴대폰 지문으로 들어가기 <ArrowRight size={18}/></a>
+      </section>
       <section className="section-wrap">
         <div className="section-heading">
           <p>나를 설명하는 세 가지</p>

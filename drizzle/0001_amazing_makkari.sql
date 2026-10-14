@@ -1,0 +1,1 @@
+ALTER TABLE `passkeys` ADD `revoked_at` text;
