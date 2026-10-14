@@ -7,6 +7,7 @@ const origin=process.argv[2]||'http://localhost:8788', rpID=new URL(origin).host
 const reportPath=process.argv[3]||'outputs/security-check.json';
 const runId=Date.now().toString(36), log=[], passed=[];
 const b64=v=>Buffer.from(v).toString('base64url');
+function redact(v){if(Array.isArray(v))return v.map(redact);if(v&&typeof v==='object')return Object.fromEntries(Object.entries(v).map(([k,x])=>[k,/cookie|token|pairTicket|phoneUrl/i.test(k)?'[redacted]':redact(x)]));return v;}
 const sha=v=>createHash('sha256').update(v).digest();
 function cbor(v) {
   const head=(major,n)=>n<24?Buffer.from([major*32+n]):n<256?Buffer.from([major*32+24,n]):Buffer.from([major*32+25,n>>8,n&255]);
@@ -35,7 +36,7 @@ function browser(label) {
     const response=await fetch(origin+path,{method,headers:{Origin:origin,...(cookie?{Cookie:cookie}:{}),...(data?{'Content-Type':'application/json'}:{}),...extraHeaders},body:data?JSON.stringify(data):undefined});
     for(const set of response.headers.getSetCookie()){const [k,v]=set.split(';')[0].split('=');if(v)jar.set(k,v);else jar.delete(k);}
     const raw=await response.text();let result;try{result=JSON.parse(raw);}catch{result=raw;}
-    log.push({browser:label,method,path,request:data??null,status:response.status,response:result,cookie:'[not recorded]'});
+    log.push({browser:label,method,path,request:redact(data??null),status:response.status,response:redact(result),cookie:'[not recorded]'});
     assert.equal(response.status,expected,`${label} ${method} ${path}: ${raw}`);return result;
   }};
 }
@@ -72,6 +73,21 @@ const cookieString=[...a.jar].map(([k,v])=>k+'='+v).join('; ');
 const race=await Promise.all([1,2].map(()=>fetch(origin+'/api/passkey/login-verify',{method:'POST',headers:{Origin:origin,Cookie:cookieString,'Content-Type':'application/json'},body:JSON.stringify(raceRequest)}).then(async r=>({status:r.status,response:await r.json()}))));assert.deepEqual(race.map(r=>r.status).sort(),[200,401]);log.push({name:'parallel challenge replay',results:race});mark('동시 challenge 재사용: 한 요청만 200, 나머지 401');
 // The concurrent fetch above rotates the session without updating our browser jar; obtain the new session normally.
 await login(a,a2,handleA);await a.request('/api/passkey/delete-key','POST',{id:a2.id});await a.request('/api/private-notes','GET',undefined,401);await b.request('/api/passkey/delete-key','POST',{id:b1.id});mark('마지막 패스키 삭제 시 즉시 비공개 접근 401');
+const pc=browser('QR PC'),phone=browser('QR phone'),otherPC=browser('other PC'),mobile1=authenticator(),mobile2=authenticator(),qrHandle='qr-'+runId;
+const newPair=await pc.request('/api/phone-pair/start','POST',{mode:'signup',handle:qrHandle,name:'휴대폰 검사 1',storage:'기기 자체'});
+const getTicket=p=>new URLSearchParams(new URL(p.phoneUrl).hash.slice(1)).get('ticket');
+const ticket=getTicket(newPair);await phone.request('/api/phone-pair/info','POST',{pairTicket:ticket});await pc.request('/api/phone-pair/consume','POST',{pairId:newPair.pairId},401);
+const mobileOptions=await phone.request('/api/passkey/register-options','POST',{pairTicket:ticket});assert.equal(mobileOptions.options.authenticatorSelection.authenticatorAttachment,'platform');
+await phone.request('/api/passkey/register-verify','POST',{flowId:mobileOptions.flowId,credential:mobile1.register(mobileOptions.options)});
+const pairState=await pc.request('/api/phone-pair/status?id='+newPair.pairId);assert.equal(pairState.state,'ready');
+await otherPC.request('/api/phone-pair/consume','POST',{pairId:newPair.pairId},401);
+await pc.request('/api/phone-pair/consume','POST',{pairId:newPair.pairId});const pcNotes=await pc.request('/api/private-notes');assert.equal(pcNotes.notes.length,3);mark('QR 등록: 휴대폰 플랫폼 인증 후 원래 PC만 로그인 / 인증 전·다른 PC 401');
+await pc.request('/api/phone-pair/consume','POST',{pairId:newPair.pairId},401);await phone.request('/api/phone-pair/info','POST',{pairTicket:ticket},410);mark('QR 일회용 소비 / QR 재사용 401·410');
+const extraPair=await pc.request('/api/phone-pair/start','POST',{mode:'signup',name:'휴대폰 검사 2',storage:'기기 자체'});const extraOptions=await phone.request('/api/passkey/register-options','POST',{pairTicket:getTicket(extraPair)});await phone.request('/api/passkey/register-verify','POST',{flowId:extraOptions.flowId,credential:mobile2.register(extraOptions.options)});await pc.request('/api/phone-pair/consume','POST',{pairId:extraPair.pairId});const mobileKeys=await pc.request('/api/passkey/keys');assert.equal(mobileKeys.keys.length,2);mark('QR로 기존 계정에 두 번째 휴대폰 키 추가');
+await pc.request('/api/passkey/logout','POST',{});const loginPair=await pc.request('/api/phone-pair/start','POST',{mode:'login',handle:qrHandle});const phoneLoginOptions=await phone.request('/api/passkey/login-options','POST',{pairTicket:getTicket(loginPair),handle:handleA});assert.equal(phoneLoginOptions.options.hints[0],'client-device');await phone.request('/api/passkey/login-verify','POST',{flowId:phoneLoginOptions.flowId,credential:mobile2.login(phoneLoginOptions.options)});await pc.request('/api/phone-pair/consume','POST',{pairId:loginPair.pairId});mark('QR 로그인: 휴대폰 실제 서명 뒤 PC 세션 발급 / 요청 별명 위조 무시');
+const cancelPair=await pc.request('/api/phone-pair/start','POST',{name:'취소 키',storage:'기기 자체'});const cancelOptions=await phone.request('/api/passkey/register-options','POST',{pairTicket:getTicket(cancelPair)});await pc.request('/api/phone-pair/cancel','POST',{});await phone.request('/api/passkey/register-verify','POST',{flowId:cancelOptions.flowId,credential:authenticator().register(cancelOptions.options)},410);mark('PC의 QR 취소 뒤 휴대폰 등록 거절 410');
+const stalePair=await pc.request('/api/phone-pair/start','POST',{name:'로그아웃 키',storage:'기기 자체'});await pc.request('/api/passkey/logout','POST',{});await phone.request('/api/passkey/register-options','POST',{pairTicket:getTicket(stalePair)},401);mark('PC 로그아웃 뒤 QR로 새 키 추가 거절 401');
+await login(pc,mobile2,qrHandle);await pc.request('/api/passkey/delete-key','POST',{id:mobile1.id});await pc.request('/api/passkey/delete-key','POST',{id:mobile2.id});
 await anonymous.request('/api/passkey/register-options','POST',{handle:'csrf-'+runId,name:'검사',storage:'기기 자체'},403,{Origin:'https://invalid.example'});mark('다른 사이트의 변경 요청 403');
 mkdirSync(new URL('../outputs/',import.meta.url),{recursive:true});
 writeFileSync(reportPath,JSON.stringify({testedAt:new Date().toISOString(),origin,authenticator:'Node 소프트웨어 인증기 · 실제 기기 확인과 구분',passed,log},null,2));

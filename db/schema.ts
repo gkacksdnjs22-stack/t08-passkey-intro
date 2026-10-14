@@ -18,6 +18,13 @@ export const challenges = sqliteTable('passkey_challenges', {
   challenge: text('challenge').notNull(), userId: text('user_id').notNull(), handle: text('handle').notNull(),
   name: text('name').notNull(), storage: text('storage').notNull(), sessionHash: text('session_hash'),
   expiresAt: integer('expires_at').notNull(),
+  pairId: text('pair_id'),
+});
+export const phonePairs = sqliteTable('phone_pairs', {
+  id:text('id').primaryKey(), ticketHash:text('ticket_hash').notNull().unique(), pcHash:text('pc_hash').notNull(),
+  mode:text('mode').notNull(), userId:text('user_id').notNull(), handle:text('handle').notNull(),
+  name:text('name').notNull(), storage:text('storage').notNull(), sessionHash:text('session_hash'),
+  state:text('state').notNull().default('pending'), credentialId:text('credential_id'), expiresAt:integer('expires_at').notNull(),
 });
 export const notes = sqliteTable('private_notes', {
   id: text('id').primaryKey(), userId: text('user_id').notNull().references(() => users.id),

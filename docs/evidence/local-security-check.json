@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-10-14T01:02:02.963Z",
+  "testedAt": "2026-10-14T01:10:49.198Z",
   "origin": "http://localhost:8788",
   "authenticator": "Node 소프트웨어 인증기 · 실제 기기 확인과 구분",
   "passed": [
@@ -20,6 +20,12 @@
     "패스키 삭제 뒤 남은 키 로그인 성공 / 삭제한 키 로그인 401",
     "동시 challenge 재사용: 한 요청만 200, 나머지 401",
     "마지막 패스키 삭제 시 즉시 비공개 접근 401",
+    "QR 등록: 휴대폰 플랫폼 인증 후 원래 PC만 로그인 / 인증 전·다른 PC 401",
+    "QR 일회용 소비 / QR 재사용 401·410",
+    "QR로 기존 계정에 두 번째 휴대폰 키 추가",
+    "QR 로그인: 휴대폰 실제 서명 뒤 PC 세션 발급 / 요청 별명 위조 무시",
+    "PC의 QR 취소 뒤 휴대폰 등록 거절 410",
+    "PC 로그아웃 뒤 QR로 새 키 추가 거절 401",
     "다른 사이트의 변경 요청 403"
   ],
   "log": [
@@ -39,22 +45,22 @@
       "method": "POST",
       "path": "/api/passkey/register-options",
       "request": {
-        "handle": "fixture-a-mv7en6a7",
+        "handle": "fixture-a-mv7eyg19",
         "name": "소프트웨어 검사 키",
         "storage": "기기 자체"
       },
       "status": 200,
       "response": {
-        "flowId": "bc3xLKffm8pgLkc24yZOGn-zQ4mW0AbHmWJcqSg7AbQ",
+        "flowId": "D4EgpjZk44TTVkoT8AlI-4kOCKgUmuG9K0SwZ3VTGoU",
         "options": {
-          "challenge": "4GLWGmSGlFwMDM-TW9TkJGJQutHi8j743HkPAg_HY3g",
+          "challenge": "V0jzGYthbTjPeT078zNJhbO28npRjI1YAC1SgC7QO48",
           "rp": {
             "name": "함찬원의 비공개 노트",
             "id": "localhost"
           },
           "user": {
-            "id": "Y2FlM2NkMjktNjc1NS00MzllLTk5MjMtNDQ4YjQ1MmNiMWEy",
-            "name": "fixture-a-mv7en6a7",
+            "id": "YjIxYWY4ZjMtNjQzNS00YmVkLTkzYzUtYzk3MjFkN2JmY2Fm",
+            "name": "fixture-a-mv7eyg19",
             "displayName": ""
           },
           "pubKeyCredParams": [
@@ -91,10 +97,10 @@
       "method": "POST",
       "path": "/api/passkey/register-verify",
       "request": {
-        "flowId": "bc3xLKffm8pgLkc24yZOGn-zQ4mW0AbHmWJcqSg7AbQ",
+        "flowId": "D4EgpjZk44TTVkoT8AlI-4kOCKgUmuG9K0SwZ3VTGoU",
         "credential": {
-          "id": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48",
-          "rawId": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48",
+          "id": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec",
+          "rawId": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec",
           "type": "public-key",
           "authenticatorAttachment": "platform",
           "clientExtensionResults": {
@@ -103,8 +109,8 @@
             }
           },
           "response": {
-            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiNEdMV0dtU0dsRndNRE0tVFc5VGtKR0pRdXRIaThqNzQzSGtQQWdfSFkzZyIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
-            "attestationObject": "o2NmbXRkbm9uZWhhdXRoRGF0YVikSZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAAAAAAAAAAAAAAAAAAAAAAAAIJmJoDCwT7j5FLaahymGZ1nasZyomJoe-Gcg9d3s8ruPpQECAyYgASFYILpp6wlyOK4QYeNYOQas024a7Y8ojNiOS8HEk0wjOYJdIlgg9usrFAEqCW6DHfSTXCcfxLxPnejyPs4-fV4HBAguuy1nYXR0U3RtdKA",
+            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiVjBqekdZdGhiVGpQZVQwNzh6TkpoYk8yOG5wUmpJMVlBQzFTZ0M3UU80OCIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
+            "attestationObject": "o2NmbXRkbm9uZWhhdXRoRGF0YVikSZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAAAAAAAAAAAAAAAAAAAAAAAAIHB3ljV6qiMrTpp3Vy_a8JM0KoxzHjYvtIP1A51f1innpQECAyYgASFYIIOcZ1r2v9E1VjmlNvv3yy0b8eB4mS2DMGnHUIxs9KR5IlggQvMK84kpdON8E9LheZUTsK1_NOPv9o2VDmFdz70XUtZnYXR0U3RtdKA",
             "transports": [
               "internal"
             ]
@@ -115,10 +121,10 @@
       "response": {
         "verified": true,
         "user": {
-          "id": "cae3cd29-6755-439e-9923-448b452cb1a2",
-          "handle": "fixture-a-mv7en6a7"
+          "id": "b21af8f3-6435-4bed-93c5-c9721d7bfcaf",
+          "handle": "fixture-a-mv7eyg19"
         },
-        "publicKey": "pQECAyYgASFYILpp6wlyOK4QYeNYOQas024a7Y8ojNiOS8HEk0wjOYJdIlgg9usrFAEqCW6DHfSTXCcfxLxPnejyPs4-fV4HBAguuy0",
+        "publicKey": "pQECAyYgASFYIIOcZ1r2v9E1VjmlNvv3yy0b8eB4mS2DMGnHUIxs9KR5IlggQvMK84kpdON8E9LheZUTsK1_NOPv9o2VDmFdz70XUtY",
         "keyType": "COSE 공개키 · 개인키와 비밀번호는 저장하지 않음"
       },
       "cookie": "[not recorded]"
@@ -128,22 +134,22 @@
       "method": "POST",
       "path": "/api/passkey/register-options",
       "request": {
-        "handle": "fixture-b-mv7en6a7",
+        "handle": "fixture-b-mv7eyg19",
         "name": "소프트웨어 검사 키",
         "storage": "기기 자체"
       },
       "status": 200,
       "response": {
-        "flowId": "h0FRlhvSL2V1SOATHgubxgC9I8d756yNEC-7Bn8akws",
+        "flowId": "TnBd7bpD4FchpE0B8y0tOkCtk4RxGXgefN6mnOKKuno",
         "options": {
-          "challenge": "wqFaJ0rrLA7hFLXw-9mw63jpBrU3Q8ZbNZiJreC8vrU",
+          "challenge": "jIY8OuCMAtrIpoK9fUvMQltvODoFFs40Nl5qn-rh4f0",
           "rp": {
             "name": "함찬원의 비공개 노트",
             "id": "localhost"
           },
           "user": {
-            "id": "OTJlZWJlNzYtNTE3Ny00ZTg5LTgyN2ItOGViZjIyNDQ2OGJk",
-            "name": "fixture-b-mv7en6a7",
+            "id": "NjdhYjUxZGUtOTFiMi00NjNiLWIyODYtODIwM2JkOWVkNTZl",
+            "name": "fixture-b-mv7eyg19",
             "displayName": ""
           },
           "pubKeyCredParams": [
@@ -180,10 +186,10 @@
       "method": "POST",
       "path": "/api/passkey/register-verify",
       "request": {
-        "flowId": "h0FRlhvSL2V1SOATHgubxgC9I8d756yNEC-7Bn8akws",
+        "flowId": "TnBd7bpD4FchpE0B8y0tOkCtk4RxGXgefN6mnOKKuno",
         "credential": {
-          "id": "jT5BfdV9NLFeNUppFqMidObpowjTM2Cu3tv9S--HSUk",
-          "rawId": "jT5BfdV9NLFeNUppFqMidObpowjTM2Cu3tv9S--HSUk",
+          "id": "tkwX2iWc5YU0U0FDXWXbKSb6BlZDnPvT9LKIqeSm5zE",
+          "rawId": "tkwX2iWc5YU0U0FDXWXbKSb6BlZDnPvT9LKIqeSm5zE",
           "type": "public-key",
           "authenticatorAttachment": "platform",
           "clientExtensionResults": {
@@ -192,8 +198,8 @@
             }
           },
           "response": {
-            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoid3FGYUowcnJMQTdoRkxYdy05bXc2M2pwQnJVM1E4WmJOWmlKcmVDOHZyVSIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
-            "attestationObject": "o2NmbXRkbm9uZWhhdXRoRGF0YVikSZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAAAAAAAAAAAAAAAAAAAAAAAAII0-QX3VfTSxXjVKaRajInTm6aMI0zNgrt7b_Uvvh0lJpQECAyYgASFYIG3kBL2ReaeY0QPaJfXoj6ff7g2u-e7Jqx9d9aOLNJ8XIlggrH3GeuzwyHtJoZz0QidB0V55T3i7NOr5vDeRl4lbPHdnYXR0U3RtdKA",
+            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiaklZOE91Q01BdHJJcG9LOWZVdk1RbHR2T0RvRkZzNDBObDVxbi1yaDRmMCIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
+            "attestationObject": "o2NmbXRkbm9uZWhhdXRoRGF0YVikSZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAAAAAAAAAAAAAAAAAAAAAAAAILZMF9olnOWFNFNBQ11l2ykm-gZWQ5z70_SyiKnkpucxpQECAyYgASFYIDY7fChhLiYf8ilC5WHUErtO4OPge28N4hpQcIxrmy4OIlgg8vKh1s8rsCBTJssoQzXSCEtgcJ4ZddiXHPAca-3BVnhnYXR0U3RtdKA",
             "transports": [
               "internal"
             ]
@@ -204,10 +210,10 @@
       "response": {
         "verified": true,
         "user": {
-          "id": "92eebe76-5177-4e89-827b-8ebf224468bd",
-          "handle": "fixture-b-mv7en6a7"
+          "id": "67ab51de-91b2-463b-b286-8203bd9ed56e",
+          "handle": "fixture-b-mv7eyg19"
         },
-        "publicKey": "pQECAyYgASFYIG3kBL2ReaeY0QPaJfXoj6ff7g2u-e7Jqx9d9aOLNJ8XIlggrH3GeuzwyHtJoZz0QidB0V55T3i7NOr5vDeRl4lbPHc",
+        "publicKey": "pQECAyYgASFYIDY7fChhLiYf8ilC5WHUErtO4OPge28N4hpQcIxrmy4OIlgg8vKh1s8rsCBTJssoQzXSCEtgcJ4ZddiXHPAca-3BVng",
         "keyType": "COSE 공개키 · 개인키와 비밀번호는 저장하지 않음"
       },
       "cookie": "[not recorded]"
@@ -217,22 +223,22 @@
       "method": "POST",
       "path": "/api/passkey/register-options",
       "request": {
-        "handle": "fixture-a-mv7en6a7",
+        "handle": "fixture-a-mv7eyg19",
         "name": "두 번째 소프트웨어 검사 키",
         "storage": "기기 자체"
       },
       "status": 200,
       "response": {
-        "flowId": "zAckaF6ohEKvKIUTTHGPe9n_zIoebPsbBglsv7nTlWU",
+        "flowId": "YMSo3I0aMGzJDa_zQI8Cyu35H-zSQOflAcjHRKM17E4",
         "options": {
-          "challenge": "2gomTghChZYrJ1AF94tCKJLe28pCjjeMBSs_glKsFqI",
+          "challenge": "6yqTkSsuvTsaImEUqJvbqH6XgsawlmPEU5SexMsHt_Y",
           "rp": {
             "name": "함찬원의 비공개 노트",
             "id": "localhost"
           },
           "user": {
-            "id": "Y2FlM2NkMjktNjc1NS00MzllLTk5MjMtNDQ4YjQ1MmNiMWEy",
-            "name": "fixture-a-mv7en6a7",
+            "id": "YjIxYWY4ZjMtNjQzNS00YmVkLTkzYzUtYzk3MjFkN2JmY2Fm",
+            "name": "fixture-a-mv7eyg19",
             "displayName": ""
           },
           "pubKeyCredParams": [
@@ -249,7 +255,7 @@
           "attestation": "none",
           "excludeCredentials": [
             {
-              "id": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48",
+              "id": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec",
               "transports": [
                 "internal"
               ],
@@ -277,10 +283,10 @@
       "method": "POST",
       "path": "/api/passkey/register-verify",
       "request": {
-        "flowId": "zAckaF6ohEKvKIUTTHGPe9n_zIoebPsbBglsv7nTlWU",
+        "flowId": "YMSo3I0aMGzJDa_zQI8Cyu35H-zSQOflAcjHRKM17E4",
         "credential": {
-          "id": "CUGKfv8GabXfh_piSb6fpQo4N6N0enq0gYIACuVXzT4",
-          "rawId": "CUGKfv8GabXfh_piSb6fpQo4N6N0enq0gYIACuVXzT4",
+          "id": "iX3IRn84RpN0_L8REk8-Ek5C9LAr4r-eWtu8fM9Doxo",
+          "rawId": "iX3IRn84RpN0_L8REk8-Ek5C9LAr4r-eWtu8fM9Doxo",
           "type": "public-key",
           "authenticatorAttachment": "platform",
           "clientExtensionResults": {
@@ -289,8 +295,8 @@
             }
           },
           "response": {
-            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiMmdvbVRnaENoWllySjFBRjk0dENLSkxlMjhwQ2pqZU1CU3NfZ2xLc0ZxSSIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
-            "attestationObject": "o2NmbXRkbm9uZWhhdXRoRGF0YVikSZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAlBin7_Bmm134f6Ykm-n6UKODejdHp6tIGCAArlV80-pQECAyYgASFYIG5qpsfoMA54DCQiuP7LETQsYlSI5QqzBNSnnZrGU6fNIlggXjSwOUbs81rl6xEJjYIKlCtKEGBxSsjIavtrUX73_SBnYXR0U3RtdKA",
+            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiNnlxVGtTc3V2VHNhSW1FVXFKdmJxSDZYZ3Nhd2xtUEVVNVNleE1zSHRfWSIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
+            "attestationObject": "o2NmbXRkbm9uZWhhdXRoRGF0YVikSZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAAAAAAAAAAAAAAAAAAAAAAAAIIl9yEZ_OEaTdPy_ERJPPhJOQvSwK-K_nlrbvHzPQ6MapQECAyYgASFYIFPBYg1nXJR0YODsRZshB6BRsH0yo7AovrDG7dSZ2VGhIlggmwTzXhViL3--ndAcPwidtLaG7zcAlZQvLR6_7tLGGDdnYXR0U3RtdKA",
             "transports": [
               "internal"
             ]
@@ -301,10 +307,10 @@
       "response": {
         "verified": true,
         "user": {
-          "id": "cae3cd29-6755-439e-9923-448b452cb1a2",
-          "handle": "fixture-a-mv7en6a7"
+          "id": "b21af8f3-6435-4bed-93c5-c9721d7bfcaf",
+          "handle": "fixture-a-mv7eyg19"
         },
-        "publicKey": "pQECAyYgASFYIG5qpsfoMA54DCQiuP7LETQsYlSI5QqzBNSnnZrGU6fNIlggXjSwOUbs81rl6xEJjYIKlCtKEGBxSsjIavtrUX73_SA",
+        "publicKey": "pQECAyYgASFYIFPBYg1nXJR0YODsRZshB6BRsH0yo7AovrDG7dSZ2VGhIlggmwTzXhViL3--ndAcPwidtLaG7zcAlZQvLR6_7tLGGDc",
         "keyType": "COSE 공개키 · 개인키와 비밀번호는 저장하지 않음"
       },
       "cookie": "[not recorded]"
@@ -318,20 +324,20 @@
       "response": {
         "keys": [
           {
-            "id": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48",
+            "id": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec",
             "name": "소프트웨어 검사 키",
             "storage": "기기 자체",
-            "created_at": "2026-10-14T01:02:01.949Z",
-            "public_key": "pQECAyYgASFYILpp6wlyOK4QYeNYOQas024a7Y8ojNiOS8HEk0wjOYJdIlgg9usrFAEqCW6DHfSTXCcfxLxPnejyPs4-fV4HBAguuy0",
+            "created_at": "2026-10-14T01:10:47.678Z",
+            "public_key": "pQECAyYgASFYIIOcZ1r2v9E1VjmlNvv3yy0b8eB4mS2DMGnHUIxs9KR5IlggQvMK84kpdON8E9LheZUTsK1_NOPv9o2VDmFdz70XUtY",
             "device_type": "singleDevice",
             "backed_up": 0
           },
           {
-            "id": "CUGKfv8GabXfh_piSb6fpQo4N6N0enq0gYIACuVXzT4",
+            "id": "iX3IRn84RpN0_L8REk8-Ek5C9LAr4r-eWtu8fM9Doxo",
             "name": "두 번째 소프트웨어 검사 키",
             "storage": "기기 자체",
-            "created_at": "2026-10-14T01:02:02.057Z",
-            "public_key": "pQECAyYgASFYIG5qpsfoMA54DCQiuP7LETQsYlSI5QqzBNSnnZrGU6fNIlggXjSwOUbs81rl6xEJjYIKlCtKEGBxSsjIavtrUX73_SA",
+            "created_at": "2026-10-14T01:10:47.762Z",
+            "public_key": "pQECAyYgASFYIFPBYg1nXJR0YODsRZshB6BRsH0yo7AovrDG7dSZ2VGhIlggmwTzXhViL3--ndAcPwidtLaG7zcAlZQvLR6_7tLGGDc",
             "device_type": "singleDevice",
             "backed_up": 0
           }
@@ -359,28 +365,28 @@
       "response": {
         "notes": [
           {
-            "id": "a149c2da-ee8b-4f45-9144-827135cba170",
-            "user_id": "cae3cd29-6755-439e-9923-448b452cb1a2",
-            "title": "나의 회고",
-            "content": "가상 자료 · fixture-a-mv7en6a7의 회고 C: 오류가 나면 로그를 먼저 읽고 변경은 한 번에 하나씩 한다.",
-            "updated_at": "2026-10-14T01:02:01.949Z"
-          },
-          {
-            "id": "a26cfb5b-486c-404a-879d-c2aa47f1fa4b",
-            "user_id": "cae3cd29-6755-439e-9923-448b452cb1a2",
+            "id": "1540e8c2-a6d1-4fe2-9dd3-e0a962669137",
+            "user_id": "b21af8f3-6435-4bed-93c5-c9721d7bfcaf",
             "title": "프로젝트 메모",
-            "content": "가상 자료 · fixture-a-mv7en6a7의 실습 A: 방화벽 규칙을 세 가지 경우로 나누어 확인한다.",
-            "updated_at": "2026-10-14T01:02:01.949Z"
+            "content": "가상 자료 · fixture-a-mv7eyg19의 실습 A: 방화벽 규칙을 세 가지 경우로 나누어 확인한다.",
+            "updated_at": "2026-10-14T01:10:47.678Z"
           },
           {
-            "id": "d0676e04-a074-4de3-98a2-864787f59e68",
-            "user_id": "cae3cd29-6755-439e-9923-448b452cb1a2",
+            "id": "3cb99c41-816a-4c42-b9f4-1419bce9731b",
+            "user_id": "b21af8f3-6435-4bed-93c5-c9721d7bfcaf",
             "title": "지원 계획",
-            "content": "가상 자료 · fixture-a-mv7en6a7의 가상 기업 B: 네트워크 실습 과정을 정리한 뒤 지원 준비를 한다.",
-            "updated_at": "2026-10-14T01:02:01.949Z"
+            "content": "가상 자료 · fixture-a-mv7eyg19의 가상 기업 B: 네트워크 실습 과정을 정리한 뒤 지원 준비를 한다.",
+            "updated_at": "2026-10-14T01:10:47.678Z"
+          },
+          {
+            "id": "ade94572-58c4-4518-96c6-cdfd88876385",
+            "user_id": "b21af8f3-6435-4bed-93c5-c9721d7bfcaf",
+            "title": "나의 회고",
+            "content": "가상 자료 · fixture-a-mv7eyg19의 회고 C: 오류가 나면 로그를 먼저 읽고 변경은 한 번에 하나씩 한다.",
+            "updated_at": "2026-10-14T01:10:47.678Z"
           }
         ],
-        "userId": "cae3cd29-6755-439e-9923-448b452cb1a2"
+        "userId": "b21af8f3-6435-4bed-93c5-c9721d7bfcaf"
       },
       "cookie": "[not recorded]"
     },
@@ -393,35 +399,35 @@
       "response": {
         "notes": [
           {
-            "id": "190bcae8-1dc0-4f7f-8fde-bc1de166cb8b",
-            "user_id": "92eebe76-5177-4e89-827b-8ebf224468bd",
-            "title": "나의 회고",
-            "content": "가상 자료 · fixture-b-mv7en6a7의 회고 C: 오류가 나면 로그를 먼저 읽고 변경은 한 번에 하나씩 한다.",
-            "updated_at": "2026-10-14T01:02:01.993Z"
-          },
-          {
-            "id": "b0e9c2cb-21cf-44f5-938a-37768628f04d",
-            "user_id": "92eebe76-5177-4e89-827b-8ebf224468bd",
+            "id": "643ced61-c809-448c-81d1-461584da107e",
+            "user_id": "67ab51de-91b2-463b-b286-8203bd9ed56e",
             "title": "프로젝트 메모",
-            "content": "가상 자료 · fixture-b-mv7en6a7의 실습 A: 방화벽 규칙을 세 가지 경우로 나누어 확인한다.",
-            "updated_at": "2026-10-14T01:02:01.993Z"
+            "content": "가상 자료 · fixture-b-mv7eyg19의 실습 A: 방화벽 규칙을 세 가지 경우로 나누어 확인한다.",
+            "updated_at": "2026-10-14T01:10:47.724Z"
           },
           {
-            "id": "d4e4fa68-f512-40b9-b89b-cff43a953815",
-            "user_id": "92eebe76-5177-4e89-827b-8ebf224468bd",
+            "id": "6fa96a8d-bc4a-4be3-9ce9-99dae68c96e3",
+            "user_id": "67ab51de-91b2-463b-b286-8203bd9ed56e",
+            "title": "나의 회고",
+            "content": "가상 자료 · fixture-b-mv7eyg19의 회고 C: 오류가 나면 로그를 먼저 읽고 변경은 한 번에 하나씩 한다.",
+            "updated_at": "2026-10-14T01:10:47.724Z"
+          },
+          {
+            "id": "e886f60d-1a93-4406-8309-e63028de6d3f",
+            "user_id": "67ab51de-91b2-463b-b286-8203bd9ed56e",
             "title": "지원 계획",
-            "content": "가상 자료 · fixture-b-mv7en6a7의 가상 기업 B: 네트워크 실습 과정을 정리한 뒤 지원 준비를 한다.",
-            "updated_at": "2026-10-14T01:02:01.993Z"
+            "content": "가상 자료 · fixture-b-mv7eyg19의 가상 기업 B: 네트워크 실습 과정을 정리한 뒤 지원 준비를 한다.",
+            "updated_at": "2026-10-14T01:10:47.724Z"
           }
         ],
-        "userId": "92eebe76-5177-4e89-827b-8ebf224468bd"
+        "userId": "67ab51de-91b2-463b-b286-8203bd9ed56e"
       },
       "cookie": "[not recorded]"
     },
     {
       "browser": "A",
       "method": "GET",
-      "path": "/api/private-notes?id=190bcae8-1dc0-4f7f-8fde-bc1de166cb8b",
+      "path": "/api/private-notes?id=643ced61-c809-448c-81d1-461584da107e",
       "request": null,
       "status": 403,
       "response": {
@@ -432,7 +438,7 @@
     {
       "browser": "B",
       "method": "GET",
-      "path": "/api/private-notes?id=a149c2da-ee8b-4f45-9144-827135cba170",
+      "path": "/api/private-notes?id=1540e8c2-a6d1-4fe2-9dd3-e0a962669137",
       "request": null,
       "status": 403,
       "response": {
@@ -445,7 +451,7 @@
       "method": "PATCH",
       "path": "/api/private-notes",
       "request": {
-        "id": "190bcae8-1dc0-4f7f-8fde-bc1de166cb8b",
+        "id": "643ced61-c809-448c-81d1-461584da107e",
         "title": "변조",
         "content": "남의 자료"
       },
@@ -464,62 +470,62 @@
       "response": {
         "notes": [
           {
-            "id": "190bcae8-1dc0-4f7f-8fde-bc1de166cb8b",
-            "user_id": "92eebe76-5177-4e89-827b-8ebf224468bd",
-            "title": "나의 회고",
-            "content": "가상 자료 · fixture-b-mv7en6a7의 회고 C: 오류가 나면 로그를 먼저 읽고 변경은 한 번에 하나씩 한다.",
-            "updated_at": "2026-10-14T01:02:01.993Z"
-          },
-          {
-            "id": "b0e9c2cb-21cf-44f5-938a-37768628f04d",
-            "user_id": "92eebe76-5177-4e89-827b-8ebf224468bd",
+            "id": "643ced61-c809-448c-81d1-461584da107e",
+            "user_id": "67ab51de-91b2-463b-b286-8203bd9ed56e",
             "title": "프로젝트 메모",
-            "content": "가상 자료 · fixture-b-mv7en6a7의 실습 A: 방화벽 규칙을 세 가지 경우로 나누어 확인한다.",
-            "updated_at": "2026-10-14T01:02:01.993Z"
+            "content": "가상 자료 · fixture-b-mv7eyg19의 실습 A: 방화벽 규칙을 세 가지 경우로 나누어 확인한다.",
+            "updated_at": "2026-10-14T01:10:47.724Z"
           },
           {
-            "id": "d4e4fa68-f512-40b9-b89b-cff43a953815",
-            "user_id": "92eebe76-5177-4e89-827b-8ebf224468bd",
+            "id": "6fa96a8d-bc4a-4be3-9ce9-99dae68c96e3",
+            "user_id": "67ab51de-91b2-463b-b286-8203bd9ed56e",
+            "title": "나의 회고",
+            "content": "가상 자료 · fixture-b-mv7eyg19의 회고 C: 오류가 나면 로그를 먼저 읽고 변경은 한 번에 하나씩 한다.",
+            "updated_at": "2026-10-14T01:10:47.724Z"
+          },
+          {
+            "id": "e886f60d-1a93-4406-8309-e63028de6d3f",
+            "user_id": "67ab51de-91b2-463b-b286-8203bd9ed56e",
             "title": "지원 계획",
-            "content": "가상 자료 · fixture-b-mv7en6a7의 가상 기업 B: 네트워크 실습 과정을 정리한 뒤 지원 준비를 한다.",
-            "updated_at": "2026-10-14T01:02:01.993Z"
+            "content": "가상 자료 · fixture-b-mv7eyg19의 가상 기업 B: 네트워크 실습 과정을 정리한 뒤 지원 준비를 한다.",
+            "updated_at": "2026-10-14T01:10:47.724Z"
           }
         ],
-        "userId": "92eebe76-5177-4e89-827b-8ebf224468bd"
+        "userId": "67ab51de-91b2-463b-b286-8203bd9ed56e"
       },
       "cookie": "[not recorded]"
     },
     {
       "browser": "A",
       "method": "GET",
-      "path": "/api/private-notes?user_id=92eebe76-5177-4e89-827b-8ebf224468bd",
+      "path": "/api/private-notes?user_id=67ab51de-91b2-463b-b286-8203bd9ed56e",
       "request": null,
       "status": 200,
       "response": {
         "notes": [
           {
-            "id": "a149c2da-ee8b-4f45-9144-827135cba170",
-            "user_id": "cae3cd29-6755-439e-9923-448b452cb1a2",
-            "title": "나의 회고",
-            "content": "가상 자료 · fixture-a-mv7en6a7의 회고 C: 오류가 나면 로그를 먼저 읽고 변경은 한 번에 하나씩 한다.",
-            "updated_at": "2026-10-14T01:02:01.949Z"
-          },
-          {
-            "id": "a26cfb5b-486c-404a-879d-c2aa47f1fa4b",
-            "user_id": "cae3cd29-6755-439e-9923-448b452cb1a2",
+            "id": "1540e8c2-a6d1-4fe2-9dd3-e0a962669137",
+            "user_id": "b21af8f3-6435-4bed-93c5-c9721d7bfcaf",
             "title": "프로젝트 메모",
-            "content": "가상 자료 · fixture-a-mv7en6a7의 실습 A: 방화벽 규칙을 세 가지 경우로 나누어 확인한다.",
-            "updated_at": "2026-10-14T01:02:01.949Z"
+            "content": "가상 자료 · fixture-a-mv7eyg19의 실습 A: 방화벽 규칙을 세 가지 경우로 나누어 확인한다.",
+            "updated_at": "2026-10-14T01:10:47.678Z"
           },
           {
-            "id": "d0676e04-a074-4de3-98a2-864787f59e68",
-            "user_id": "cae3cd29-6755-439e-9923-448b452cb1a2",
+            "id": "3cb99c41-816a-4c42-b9f4-1419bce9731b",
+            "user_id": "b21af8f3-6435-4bed-93c5-c9721d7bfcaf",
             "title": "지원 계획",
-            "content": "가상 자료 · fixture-a-mv7en6a7의 가상 기업 B: 네트워크 실습 과정을 정리한 뒤 지원 준비를 한다.",
-            "updated_at": "2026-10-14T01:02:01.949Z"
+            "content": "가상 자료 · fixture-a-mv7eyg19의 가상 기업 B: 네트워크 실습 과정을 정리한 뒤 지원 준비를 한다.",
+            "updated_at": "2026-10-14T01:10:47.678Z"
+          },
+          {
+            "id": "ade94572-58c4-4518-96c6-cdfd88876385",
+            "user_id": "b21af8f3-6435-4bed-93c5-c9721d7bfcaf",
+            "title": "나의 회고",
+            "content": "가상 자료 · fixture-a-mv7eyg19의 회고 C: 오류가 나면 로그를 먼저 읽고 변경은 한 번에 하나씩 한다.",
+            "updated_at": "2026-10-14T01:10:47.678Z"
           }
         ],
-        "userId": "cae3cd29-6755-439e-9923-448b452cb1a2"
+        "userId": "b21af8f3-6435-4bed-93c5-c9721d7bfcaf"
       },
       "cookie": "[not recorded]"
     },
@@ -528,7 +534,7 @@
       "method": "POST",
       "path": "/api/passkey/delete-key",
       "request": {
-        "id": "jT5BfdV9NLFeNUppFqMidObpowjTM2Cu3tv9S--HSUk"
+        "id": "tkwX2iWc5YU0U0FDXWXbKSb6BlZDnPvT9LKIqeSm5zE"
       },
       "status": 403,
       "response": {
@@ -563,27 +569,25 @@
       "method": "POST",
       "path": "/api/passkey/login-options",
       "request": {
-        "handle": "fixture-a-mv7en6a7"
+        "handle": "fixture-a-mv7eyg19"
       },
       "status": 200,
       "response": {
-        "flowId": "u-8XQbRI0RAqslHU1X8yyShDZ5Vg3HJx06-kfd6uTsk",
+        "flowId": "Jt5qBMUbhF3_s4scrV79TEpEF7IyDGvYiwDXZNTRaR8",
         "options": {
           "rpId": "localhost",
-          "challenge": "JWR9yktKIm91Y7rhR1nRLHhWGdk0VM5WD01oDVPF-iw",
+          "challenge": "F064UVkoLbs9quCRs57_DAV_lpBSD9MlIj64xPGcoZQ",
           "allowCredentials": [
             {
-              "id": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48",
+              "id": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec",
               "transports": [
-                "internal",
                 "hybrid"
               ],
               "type": "public-key"
             },
             {
-              "id": "CUGKfv8GabXfh_piSb6fpQo4N6N0enq0gYIACuVXzT4",
+              "id": "iX3IRn84RpN0_L8REk8-Ek5C9LAr4r-eWtu8fM9Doxo",
               "transports": [
-                "internal",
                 "hybrid"
               ],
               "type": "public-key"
@@ -603,18 +607,18 @@
       "method": "POST",
       "path": "/api/passkey/login-verify",
       "request": {
-        "flowId": "u-8XQbRI0RAqslHU1X8yyShDZ5Vg3HJx06-kfd6uTsk",
+        "flowId": "Jt5qBMUbhF3_s4scrV79TEpEF7IyDGvYiwDXZNTRaR8",
         "credential": {
-          "id": "CUGKfv8GabXfh_piSb6fpQo4N6N0enq0gYIACuVXzT4",
-          "rawId": "CUGKfv8GabXfh_piSb6fpQo4N6N0enq0gYIACuVXzT4",
+          "id": "iX3IRn84RpN0_L8REk8-Ek5C9LAr4r-eWtu8fM9Doxo",
+          "rawId": "iX3IRn84RpN0_L8REk8-Ek5C9LAr4r-eWtu8fM9Doxo",
           "type": "public-key",
           "authenticatorAttachment": "platform",
           "clientExtensionResults": {},
           "response": {
-            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiSldSOXlrdEtJbTkxWTdyaFIxblJMSGhXR2RrMFZNNVdEMDFvRFZQRi1pdyIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
+            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiRjA2NFVWa29MYnM5cXVDUnM1N19EQVZfbHBCU0Q5TWxJajY0eFBHY29aUSIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
             "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAAAQ",
-            "signature": "MEYCIQCjCRpUl1Fas65rOkDMbQbaP-AlUVaxrKzC_WWxoG_hIwIhAJUOvDv8oNra6JqU8S2YTUEk8FF7YzuWreofAZQLCh5h",
-            "userHandle": "Y2FlM2NkMjktNjc1NS00MzllLTk5MjMtNDQ4YjQ1MmNiMWEy"
+            "signature": "MEUCIF7Jh49jVhNYmaj5Jcw125ksse5HiZGAxGvLJpfz-jCfAiEA1wl7ojKm25Qjfh-7xtUDq_gj19xUhUuDCvbp6TJdoPw",
+            "userHandle": "YjIxYWY4ZjMtNjQzNS00YmVkLTkzYzUtYzk3MjFkN2JmY2Fm"
           }
         }
       },
@@ -622,8 +626,8 @@
       "response": {
         "verified": true,
         "user": {
-          "id": "cae3cd29-6755-439e-9923-448b452cb1a2",
-          "handle": "fixture-a-mv7en6a7"
+          "id": "b21af8f3-6435-4bed-93c5-c9721d7bfcaf",
+          "handle": "fixture-a-mv7eyg19"
         }
       },
       "cookie": "[not recorded]"
@@ -638,16 +642,16 @@
       },
       "status": 200,
       "response": {
-        "flowId": "R59bWrAhAJOAL1sBH0_trkBIaD8-fZsC8JFTsu2nYS0",
+        "flowId": "PX8_W0ugSwx1WEFLBQIvOLhqUm1iQnevS3_vaJsLkHY",
         "options": {
-          "challenge": "s6n6hRCw8K_mj1VorMKDreXHh-Js9OrsTqLa_mcWBBg",
+          "challenge": "0Z7Vo_VmJSRbKVHl-ChK18f6EbdSIzXtoZC8J04Jq3U",
           "rp": {
             "name": "함찬원의 비공개 노트",
             "id": "localhost"
           },
           "user": {
-            "id": "Y2FlM2NkMjktNjc1NS00MzllLTk5MjMtNDQ4YjQ1MmNiMWEy",
-            "name": "fixture-a-mv7en6a7",
+            "id": "YjIxYWY4ZjMtNjQzNS00YmVkLTkzYzUtYzk3MjFkN2JmY2Fm",
+            "name": "fixture-a-mv7eyg19",
             "displayName": ""
           },
           "pubKeyCredParams": [
@@ -664,14 +668,14 @@
           "attestation": "none",
           "excludeCredentials": [
             {
-              "id": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48",
+              "id": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec",
               "transports": [
                 "internal"
               ],
               "type": "public-key"
             },
             {
-              "id": "CUGKfv8GabXfh_piSb6fpQo4N6N0enq0gYIACuVXzT4",
+              "id": "iX3IRn84RpN0_L8REk8-Ek5C9LAr4r-eWtu8fM9Doxo",
               "transports": [
                 "internal"
               ],
@@ -710,10 +714,10 @@
       "method": "POST",
       "path": "/api/passkey/register-verify",
       "request": {
-        "flowId": "R59bWrAhAJOAL1sBH0_trkBIaD8-fZsC8JFTsu2nYS0",
+        "flowId": "PX8_W0ugSwx1WEFLBQIvOLhqUm1iQnevS3_vaJsLkHY",
         "credential": {
-          "id": "vTbPOZKhCL5l_Qut5DugZbxyCSqnn4mGH8qByZul-UM",
-          "rawId": "vTbPOZKhCL5l_Qut5DugZbxyCSqnn4mGH8qByZul-UM",
+          "id": "c51ir7LzW5yznlx03Y1Z2eEmoDNU_e43x-uurSf80WA",
+          "rawId": "c51ir7LzW5yznlx03Y1Z2eEmoDNU_e43x-uurSf80WA",
           "type": "public-key",
           "authenticatorAttachment": "platform",
           "clientExtensionResults": {
@@ -722,8 +726,8 @@
             }
           },
           "response": {
-            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiczZuNmhSQ3c4S19tajFWb3JNS0RyZVhIaC1KczlPcnNUcUxhX21jV0JCZyIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
-            "attestationObject": "o2NmbXRkbm9uZWhhdXRoRGF0YVikSZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAAAAAAAAAAAAAAAAAAAAAAAAIL02zzmSoQi-Zf0LreQ7oGW8cgkqp5-Jhh_KgcmbpflDpQECAyYgASFYIIsFrvnIwZzo9hymMeFOs4KDSfPM09BFRkxnq-HGGsPCIlggy5ghI7BR0Isg4JxMHAbV4LGVJkxKix2ElnxUn7h6EnpnYXR0U3RtdKA",
+            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiMFo3Vm9fVm1KU1JiS1ZIbC1DaEsxOGY2RWJkU0l6WHRvWkM4SjA0SnEzVSIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
+            "attestationObject": "o2NmbXRkbm9uZWhhdXRoRGF0YVikSZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAAAAAAAAAAAAAAAAAAAAAAAAIHOdYq-y81ucs55cdN2NWdnhJqAzVP3uN8frrq0n_NFgpQECAyYgASFYIOtMDJMmwY__52IOnXvo6y6CxrbTd18figlH7BLNlO1QIlggGw0xTACw21_vBER5Rp5iqg0wwExX0xGZonfOZcq1KxxnYXR0U3RtdKA",
             "transports": [
               "internal"
             ]
@@ -741,27 +745,25 @@
       "method": "POST",
       "path": "/api/passkey/login-options",
       "request": {
-        "handle": "fixture-a-mv7en6a7"
+        "handle": "fixture-a-mv7eyg19"
       },
       "status": 200,
       "response": {
-        "flowId": "CoqOUwgQz95-TgE6w9qlqyRJuSVMI57ffoCtYh768WU",
+        "flowId": "ZVFdLM4raEBpIWdyzEz6IpZO5NTA2wnM1zCBEO5u5xM",
         "options": {
           "rpId": "localhost",
-          "challenge": "Dn_bEbRl8x03EblXwbOMC2Sbiu9c5mUMQdYbma1in_o",
+          "challenge": "GnQzt125Q2PSHWLH1MojnGU2emDMQVK1rdQhFLI19Ao",
           "allowCredentials": [
             {
-              "id": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48",
+              "id": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec",
               "transports": [
-                "internal",
                 "hybrid"
               ],
               "type": "public-key"
             },
             {
-              "id": "CUGKfv8GabXfh_piSb6fpQo4N6N0enq0gYIACuVXzT4",
+              "id": "iX3IRn84RpN0_L8REk8-Ek5C9LAr4r-eWtu8fM9Doxo",
               "transports": [
-                "internal",
                 "hybrid"
               ],
               "type": "public-key"
@@ -781,18 +783,18 @@
       "method": "POST",
       "path": "/api/passkey/login-verify",
       "request": {
-        "flowId": "CoqOUwgQz95-TgE6w9qlqyRJuSVMI57ffoCtYh768WU",
+        "flowId": "ZVFdLM4raEBpIWdyzEz6IpZO5NTA2wnM1zCBEO5u5xM",
         "credential": {
-          "id": "jT5BfdV9NLFeNUppFqMidObpowjTM2Cu3tv9S--HSUk",
-          "rawId": "jT5BfdV9NLFeNUppFqMidObpowjTM2Cu3tv9S--HSUk",
+          "id": "tkwX2iWc5YU0U0FDXWXbKSb6BlZDnPvT9LKIqeSm5zE",
+          "rawId": "tkwX2iWc5YU0U0FDXWXbKSb6BlZDnPvT9LKIqeSm5zE",
           "type": "public-key",
           "authenticatorAttachment": "platform",
           "clientExtensionResults": {},
           "response": {
-            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiRG5fYkViUmw4eDAzRWJsWHdiT01DMlNiaXU5YzVtVU1RZFlibWExaW5fbyIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
+            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiR25RenQxMjVRMlBTSFdMSDFNb2puR1UyZW1ETVFWSzFyZFFoRkxJMTlBbyIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
             "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAAAQ",
-            "signature": "MEUCIQCr0WVy2QGUprA0GkponTo9NPE6Na5DkXC7pIS9TNcS6wIgB2RGzEWN29bM9YK3h4pL1wUY4YcSxPRaQSkBUqsaHyw",
-            "userHandle": "OTJlZWJlNzYtNTE3Ny00ZTg5LTgyN2ItOGViZjIyNDQ2OGJk"
+            "signature": "MEUCIQC4YGEAz_y3QL-fyyFFM5hnvvPOi6fzv_vSk9XFyETf5wIgJKIEckq7SvOA8-R0feBxnXjQLCoKexQDBXebRwI92b0",
+            "userHandle": "NjdhYjUxZGUtOTFiMi00NjNiLWIyODYtODIwM2JkOWVkNTZl"
           }
         }
       },
@@ -807,27 +809,25 @@
       "method": "POST",
       "path": "/api/passkey/login-options",
       "request": {
-        "handle": "fixture-a-mv7en6a7"
+        "handle": "fixture-a-mv7eyg19"
       },
       "status": 200,
       "response": {
-        "flowId": "jHGR7Ah5UPCwuSYd1wHJaomae11_CVPembO8sx8x3VQ",
+        "flowId": "yRNxKGxMxoCpVUG5fhDfxUdI-w9fV1qiYfehjRa7dtk",
         "options": {
           "rpId": "localhost",
-          "challenge": "IIddioELg_6CsrRCgiOv7k0EjJrWRayX_2P_9FeJ6dg",
+          "challenge": "kxI9QMMaZE1Mo4SsR0tt9KrEdAW_ZlXADzXDszaoqy4",
           "allowCredentials": [
             {
-              "id": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48",
+              "id": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec",
               "transports": [
-                "internal",
                 "hybrid"
               ],
               "type": "public-key"
             },
             {
-              "id": "CUGKfv8GabXfh_piSb6fpQo4N6N0enq0gYIACuVXzT4",
+              "id": "iX3IRn84RpN0_L8REk8-Ek5C9LAr4r-eWtu8fM9Doxo",
               "transports": [
-                "internal",
                 "hybrid"
               ],
               "type": "public-key"
@@ -847,18 +847,18 @@
       "method": "POST",
       "path": "/api/passkey/login-verify",
       "request": {
-        "flowId": "jHGR7Ah5UPCwuSYd1wHJaomae11_CVPembO8sx8x3VQ",
+        "flowId": "yRNxKGxMxoCpVUG5fhDfxUdI-w9fV1qiYfehjRa7dtk",
         "credential": {
-          "id": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48",
-          "rawId": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48",
+          "id": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec",
+          "rawId": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec",
           "type": "public-key",
           "authenticatorAttachment": "platform",
           "clientExtensionResults": {},
           "response": {
-            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiSUlkZGlvRUxnXzZDc3JSQ2dpT3Y3azBFakpyV1JheVhfMlBfOUZlSjZkZyIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
+            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoia3hJOVFNTWFaRTFNbzRTc1IwdHQ5S3JFZEFXX1psWEFEelhEc3phb3F5NCIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
             "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAAAQ",
-            "signature": "MEQCIFmu0hYUNyYPHOd-6ywY5FOBhSwsDGuTq205XoQgpwvjAiBtjqxSCaz9xWmC1OfkogiAaB_rRdIbexlsJIno8Lsiag",
-            "userHandle": "Y2FlM2NkMjktNjc1NS00MzllLTk5MjMtNDQ4YjQ1MmNiMWEy"
+            "signature": "MEUCIQDaVj03t5GROdBI_ZNrBDIDw_23FmjdgIm4uHpUvOULJgIgfZ_Vkai5-Q9mONGdOK0dJKDqfJYRhYjYjTCr0vE4blk",
+            "userHandle": "YjIxYWY4ZjMtNjQzNS00YmVkLTkzYzUtYzk3MjFkN2JmY2Fm"
           }
         }
       },
@@ -873,27 +873,25 @@
       "method": "POST",
       "path": "/api/passkey/login-options",
       "request": {
-        "handle": "fixture-a-mv7en6a7"
+        "handle": "fixture-a-mv7eyg19"
       },
       "status": 200,
       "response": {
-        "flowId": "UUlKTlRaFr_zIeXbBM5oIDgqc98RO0sCfOdKNUWEdd4",
+        "flowId": "yrq5FLC_AsrgRqkbMwlxyXWzMxoxwHYxka5mYMnEW10",
         "options": {
           "rpId": "localhost",
-          "challenge": "RF1hnE2_mjvnH-ifkBP5MFjrLmYqlbVd_jdd8NpV9XU",
+          "challenge": "ZGzHjQ-Iog_kfW7rq1uPZUV-hC2uVQTRZv64p_UGZgk",
           "allowCredentials": [
             {
-              "id": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48",
+              "id": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec",
               "transports": [
-                "internal",
                 "hybrid"
               ],
               "type": "public-key"
             },
             {
-              "id": "CUGKfv8GabXfh_piSb6fpQo4N6N0enq0gYIACuVXzT4",
+              "id": "iX3IRn84RpN0_L8REk8-Ek5C9LAr4r-eWtu8fM9Doxo",
               "transports": [
-                "internal",
                 "hybrid"
               ],
               "type": "public-key"
@@ -913,18 +911,18 @@
       "method": "POST",
       "path": "/api/passkey/login-verify",
       "request": {
-        "flowId": "UUlKTlRaFr_zIeXbBM5oIDgqc98RO0sCfOdKNUWEdd4",
+        "flowId": "yrq5FLC_AsrgRqkbMwlxyXWzMxoxwHYxka5mYMnEW10",
         "credential": {
-          "id": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48",
-          "rawId": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48",
+          "id": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec",
+          "rawId": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec",
           "type": "public-key",
           "authenticatorAttachment": "platform",
           "clientExtensionResults": {},
           "response": {
-            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiUkYxaG5FMl9tanZuSC1pZmtCUDVNRmpyTG1ZcWxiVmRfamRkOE5wVjlYVSIsIm9yaWdpbiI6Imh0dHBzOi8vaW52YWxpZC5leGFtcGxlIiwiY3Jvc3NPcmlnaW4iOmZhbHNlfQ",
+            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiWkd6SGpRLUlvZ19rZlc3cnExdVBaVVYtaEMydVZRVFJadjY0cF9VR1pnayIsIm9yaWdpbiI6Imh0dHBzOi8vaW52YWxpZC5leGFtcGxlIiwiY3Jvc3NPcmlnaW4iOmZhbHNlfQ",
             "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAAAg",
-            "signature": "MEUCIQCh3ra_IpgV2DsjCasBJMckCP9YyMZWvYojV8grxUTESwIgfnG3o1lJNRSfDcqwDN_JWAtHaq6zhLvHTkI0-L4qJDw",
-            "userHandle": "Y2FlM2NkMjktNjc1NS00MzllLTk5MjMtNDQ4YjQ1MmNiMWEy"
+            "signature": "MEUCIByW2Gg98HgeVDAHNGOdL84kwH7IF-8RDIz88A_q-SVnAiEA2JHw1Xs7og2ObqgwOKoPprFJyTZJxmwYNl_rIOe2zfw",
+            "userHandle": "YjIxYWY4ZjMtNjQzNS00YmVkLTkzYzUtYzk3MjFkN2JmY2Fm"
           }
         }
       },
@@ -939,27 +937,25 @@
       "method": "POST",
       "path": "/api/passkey/login-options",
       "request": {
-        "handle": "fixture-a-mv7en6a7"
+        "handle": "fixture-a-mv7eyg19"
       },
       "status": 200,
       "response": {
-        "flowId": "lyfI-iLlER6IJd2twAryVt6jOwDq6_yUoWJvKEKMRO8",
+        "flowId": "yUVbl63tzEWscqlimIeW9j_q1XMdpaJcDpyA0xBgjxE",
         "options": {
           "rpId": "localhost",
-          "challenge": "Zlc_LOc2_X_kj7wgWM_2msvjeVpP345Vp-Op1hikHxA",
+          "challenge": "kihhAQPA6cLproymHZYR093bkJOteudfnoJgohbw_lk",
           "allowCredentials": [
             {
-              "id": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48",
+              "id": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec",
               "transports": [
-                "internal",
                 "hybrid"
               ],
               "type": "public-key"
             },
             {
-              "id": "CUGKfv8GabXfh_piSb6fpQo4N6N0enq0gYIACuVXzT4",
+              "id": "iX3IRn84RpN0_L8REk8-Ek5C9LAr4r-eWtu8fM9Doxo",
               "transports": [
-                "internal",
                 "hybrid"
               ],
               "type": "public-key"
@@ -979,18 +975,18 @@
       "method": "POST",
       "path": "/api/passkey/login-verify",
       "request": {
-        "flowId": "lyfI-iLlER6IJd2twAryVt6jOwDq6_yUoWJvKEKMRO8",
+        "flowId": "yUVbl63tzEWscqlimIeW9j_q1XMdpaJcDpyA0xBgjxE",
         "credential": {
-          "id": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48",
-          "rawId": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48",
+          "id": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec",
+          "rawId": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec",
           "type": "public-key",
           "authenticatorAttachment": "platform",
           "clientExtensionResults": {},
           "response": {
-            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiWmxjX0xPYzJfWF9rajd3Z1dNXzJtc3ZqZVZwUDM0NVZwLU9wMWhpa0h4QSIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
+            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoia2loaEFRUEE2Y0xwcm95bUhaWVIwOTNia0pPdGV1ZGZub0pnb2hid19sayIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
             "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MBAAAAAw",
-            "signature": "MEYCIQC2sIHvbboljrI3b5GNtKV35KlBvk7PuTi5GUGrXMps-AIhANShkAXsOXox3ge6l5ik5tAcJaQbNAk9mrWwaBfAHGRY",
-            "userHandle": "Y2FlM2NkMjktNjc1NS00MzllLTk5MjMtNDQ4YjQ1MmNiMWEy"
+            "signature": "MEQCICVRe8qT-J5I66xbHLZSyoLrCiN1tnK7rlYRsHUaTNfrAiBrcj1GqXdWe5ypt129hwuP4l1p9dRdTFa-5Err-6j74w",
+            "userHandle": "YjIxYWY4ZjMtNjQzNS00YmVkLTkzYzUtYzk3MjFkN2JmY2Fm"
           }
         }
       },
@@ -1005,27 +1001,25 @@
       "method": "POST",
       "path": "/api/passkey/login-options",
       "request": {
-        "handle": "fixture-a-mv7en6a7"
+        "handle": "fixture-a-mv7eyg19"
       },
       "status": 200,
       "response": {
-        "flowId": "XFcLPyAAk4x2upnetWbYsmHMy32gVQdcz5LlKJMEytE",
+        "flowId": "D_jJamfjPfaynd78puK1hmOm2ArMUvwdSFtNvkfltpY",
         "options": {
           "rpId": "localhost",
-          "challenge": "Cm6aDClzD4f6tQsoEKWKWoqqZUBbzNRC0INw5OCppVA",
+          "challenge": "FZ66C78I7swIZ01czlNtDoZJmbX6wg0RH4TMA0v6r1c",
           "allowCredentials": [
             {
-              "id": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48",
+              "id": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec",
               "transports": [
-                "internal",
                 "hybrid"
               ],
               "type": "public-key"
             },
             {
-              "id": "CUGKfv8GabXfh_piSb6fpQo4N6N0enq0gYIACuVXzT4",
+              "id": "iX3IRn84RpN0_L8REk8-Ek5C9LAr4r-eWtu8fM9Doxo",
               "transports": [
-                "internal",
                 "hybrid"
               ],
               "type": "public-key"
@@ -1045,18 +1039,18 @@
       "method": "POST",
       "path": "/api/passkey/login-verify",
       "request": {
-        "flowId": "XFcLPyAAk4x2upnetWbYsmHMy32gVQdcz5LlKJMEytE",
+        "flowId": "D_jJamfjPfaynd78puK1hmOm2ArMUvwdSFtNvkfltpY",
         "credential": {
-          "id": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48",
-          "rawId": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48",
+          "id": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec",
+          "rawId": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec",
           "type": "public-key",
           "authenticatorAttachment": "platform",
           "clientExtensionResults": {},
           "response": {
-            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiQ202YURDbHpENGY2dFFzb0VLV0tXb3FxWlVCYnpOUkMwSU53NU9DcHBWQSIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
+            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiRlo2NkM3OEk3c3dJWjAxY3psTnREb1pKbWJYNndnMFJINFRNQTB2NnIxYyIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
             "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAABA",
-            "signature": "MEYCIQDTak3vYH69sPS6BYOq5XyYfD0kha6L12ECISLihMrZyAIhALwSKjeSpwJNq0BMiPoORLTGd4d1weddvlYg7xezHxOm",
-            "userHandle": "Y2FlM2NkMjktNjc1NS00MzllLTk5MjMtNDQ4YjQ1MmNiMWEy"
+            "signature": "MEYCIQDkj6bAR6DYOeL3aUwB8Y_Rx2CP6ntX1GVElAFyaayy-gIhAP_1UmDFstXnIYLYzbV2eDO8dISl-1OVx3udAKJun0ak",
+            "userHandle": "YjIxYWY4ZjMtNjQzNS00YmVkLTkzYzUtYzk3MjFkN2JmY2Fm"
           }
         }
       },
@@ -1064,8 +1058,8 @@
       "response": {
         "verified": true,
         "user": {
-          "id": "cae3cd29-6755-439e-9923-448b452cb1a2",
-          "handle": "fixture-a-mv7en6a7"
+          "id": "b21af8f3-6435-4bed-93c5-c9721d7bfcaf",
+          "handle": "fixture-a-mv7eyg19"
         }
       },
       "cookie": "[not recorded]"
@@ -1075,18 +1069,18 @@
       "method": "POST",
       "path": "/api/passkey/login-verify",
       "request": {
-        "flowId": "XFcLPyAAk4x2upnetWbYsmHMy32gVQdcz5LlKJMEytE",
+        "flowId": "D_jJamfjPfaynd78puK1hmOm2ArMUvwdSFtNvkfltpY",
         "credential": {
-          "id": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48",
-          "rawId": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48",
+          "id": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec",
+          "rawId": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec",
           "type": "public-key",
           "authenticatorAttachment": "platform",
           "clientExtensionResults": {},
           "response": {
-            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiQ202YURDbHpENGY2dFFzb0VLV0tXb3FxWlVCYnpOUkMwSU53NU9DcHBWQSIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
+            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiRlo2NkM3OEk3c3dJWjAxY3psTnREb1pKbWJYNndnMFJINFRNQTB2NnIxYyIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
             "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAABA",
-            "signature": "MEYCIQDTak3vYH69sPS6BYOq5XyYfD0kha6L12ECISLihMrZyAIhALwSKjeSpwJNq0BMiPoORLTGd4d1weddvlYg7xezHxOm",
-            "userHandle": "Y2FlM2NkMjktNjc1NS00MzllLTk5MjMtNDQ4YjQ1MmNiMWEy"
+            "signature": "MEYCIQDkj6bAR6DYOeL3aUwB8Y_Rx2CP6ntX1GVElAFyaayy-gIhAP_1UmDFstXnIYLYzbV2eDO8dISl-1OVx3udAKJun0ak",
+            "userHandle": "YjIxYWY4ZjMtNjQzNS00YmVkLTkzYzUtYzk3MjFkN2JmY2Fm"
           }
         }
       },
@@ -1101,22 +1095,22 @@
       "method": "POST",
       "path": "/api/passkey/register-options",
       "request": {
-        "handle": "cancel-mv7en6a7",
+        "handle": "cancel-mv7eyg19",
         "name": "취소 검사",
         "storage": "기기 자체"
       },
       "status": 200,
       "response": {
-        "flowId": "-I2vm8_ogQgfZjuYlI7LT1csQbYuDUx1ULZLDUzIwDI",
+        "flowId": "rzTUVdDV6gEPGOAqMSzajPi2O3LWcgS8oS1N3nbLh3Y",
         "options": {
-          "challenge": "mhZt_DrE15GxUkHKfWnPANZPlM6FoZGpOVtL4VgN96Y",
+          "challenge": "78bz0J1B9CPuyunALaj5wIirXW4Jrpe1eFgQNx0Ulps",
           "rp": {
             "name": "함찬원의 비공개 노트",
             "id": "localhost"
           },
           "user": {
-            "id": "MzMwYmQ2ZmItN2I2Yi00MjZjLTkwOTAtYjRmMTg3OWFjMTRj",
-            "name": "cancel-mv7en6a7",
+            "id": "NTM1M2FjMTMtZDMzNi00Mzg0LWI5ZjMtZDEwNGU3YzkwMjI3",
+            "name": "cancel-mv7eyg19",
             "displayName": ""
           },
           "pubKeyCredParams": [
@@ -1164,10 +1158,10 @@
       "method": "POST",
       "path": "/api/passkey/register-verify",
       "request": {
-        "flowId": "-I2vm8_ogQgfZjuYlI7LT1csQbYuDUx1ULZLDUzIwDI",
+        "flowId": "rzTUVdDV6gEPGOAqMSzajPi2O3LWcgS8oS1N3nbLh3Y",
         "credential": {
-          "id": "zDRKDyXp5wScgbf_L_MeJILDFN_HQJQlUasijk29w4U",
-          "rawId": "zDRKDyXp5wScgbf_L_MeJILDFN_HQJQlUasijk29w4U",
+          "id": "CuxkTS65Dzy3JkG4WyraWXgb6FDcgl9nbt_DUDTSIiU",
+          "rawId": "CuxkTS65Dzy3JkG4WyraWXgb6FDcgl9nbt_DUDTSIiU",
           "type": "public-key",
           "authenticatorAttachment": "platform",
           "clientExtensionResults": {
@@ -1176,8 +1170,8 @@
             }
           },
           "response": {
-            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoibWhadF9EckUxNUd4VWtIS2ZXblBBTlpQbE02Rm9aR3BPVnRMNFZnTjk2WSIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
-            "attestationObject": "o2NmbXRkbm9uZWhhdXRoRGF0YVikSZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAAAAAAAAAAAAAAAAAAAAAAAAIMw0Sg8l6ecEnIG3_y_zHiSCwxTfx0CUJVGrIo5NvcOFpQECAyYgASFYIPXoWBI7Z386Lp-h1kXctDb1zGcWZQYVLHFIgJjfgtryIlgg_8yYA8nhdlNPTsbmYx7xunWrKFutoLYlQFcCtvpqe_ZnYXR0U3RtdKA",
+            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiNzhiejBKMUI5Q1B1eXVuQUxhajV3SWlyWFc0SnJwZTFlRmdRTngwVWxwcyIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
+            "attestationObject": "o2NmbXRkbm9uZWhhdXRoRGF0YVikSZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAAAAAAAAAAAAAAAAAAAAAAAAIArsZE0uuQ88tyZBuFsq2ll4G-hQ3IJfZ27fw1A00iIlpQECAyYgASFYIOw0sGF7InG1Z8ik7nBK3dnRFiy3Z3yWJvscQW72RoUgIlggN8FVl5GP8RY83JWYRvK0ptI5y5Fb898GBs1OQOfry3JnYXR0U3RtdKA",
             "transports": [
               "internal"
             ]
@@ -1195,22 +1189,22 @@
       "method": "POST",
       "path": "/api/passkey/register-options",
       "request": {
-        "handle": "cancel-mv7en6a7",
+        "handle": "cancel-mv7eyg19",
         "name": "재시도 검사",
         "storage": "기기 자체"
       },
       "status": 200,
       "response": {
-        "flowId": "tB9ytK_fwKhnyBLg4m6UmqNc2zlPBGH_O0kYpZFmjYQ",
+        "flowId": "jbweq9b0iDN4R8LuVOxwP3Cbw0Yg-z-wSDUJKYMea2c",
         "options": {
-          "challenge": "cGYnr49w443QPZBUzm3L1zH-AT6HhHuZiAWIDZlyycc",
+          "challenge": "otPkQFd7LMuzrW8vcmaFKkzwjbsIq3BLlKwZ87vEq6w",
           "rp": {
             "name": "함찬원의 비공개 노트",
             "id": "localhost"
           },
           "user": {
-            "id": "ZWJjYTVlMmMtZWNkNC00OWFmLTllMzEtNzQyMmVmZGE5NDQ5",
-            "name": "cancel-mv7en6a7",
+            "id": "OGE5MDQ2YzctNTQwNy00OTg3LThiYjQtZWQ3MDllN2MzY2Vj",
+            "name": "cancel-mv7eyg19",
             "displayName": ""
           },
           "pubKeyCredParams": [
@@ -1258,7 +1252,7 @@
       "method": "POST",
       "path": "/api/passkey/delete-key",
       "request": {
-        "id": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48"
+        "id": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec"
       },
       "status": 200,
       "response": {
@@ -1273,19 +1267,18 @@
       "method": "POST",
       "path": "/api/passkey/login-options",
       "request": {
-        "handle": "fixture-a-mv7en6a7"
+        "handle": "fixture-a-mv7eyg19"
       },
       "status": 200,
       "response": {
-        "flowId": "z5UKjwexIkdRJgrmrRJykv9V3bv21HGC3KIrT9FqhEk",
+        "flowId": "h0h-H8CErmEkfB7VTyL9RMucJYI80U92OIF2VapSF20",
         "options": {
           "rpId": "localhost",
-          "challenge": "yy2mQEGEOF1U267LBWnm0RCfvz6fIyBo43zJXtdHVQQ",
+          "challenge": "MfiEMxjQ9ORMurZJX9igIYvUfrtCS_u7k9UG1p9Y6DU",
           "allowCredentials": [
             {
-              "id": "CUGKfv8GabXfh_piSb6fpQo4N6N0enq0gYIACuVXzT4",
+              "id": "iX3IRn84RpN0_L8REk8-Ek5C9LAr4r-eWtu8fM9Doxo",
               "transports": [
-                "internal",
                 "hybrid"
               ],
               "type": "public-key"
@@ -1305,18 +1298,18 @@
       "method": "POST",
       "path": "/api/passkey/login-verify",
       "request": {
-        "flowId": "z5UKjwexIkdRJgrmrRJykv9V3bv21HGC3KIrT9FqhEk",
+        "flowId": "h0h-H8CErmEkfB7VTyL9RMucJYI80U92OIF2VapSF20",
         "credential": {
-          "id": "CUGKfv8GabXfh_piSb6fpQo4N6N0enq0gYIACuVXzT4",
-          "rawId": "CUGKfv8GabXfh_piSb6fpQo4N6N0enq0gYIACuVXzT4",
+          "id": "iX3IRn84RpN0_L8REk8-Ek5C9LAr4r-eWtu8fM9Doxo",
+          "rawId": "iX3IRn84RpN0_L8REk8-Ek5C9LAr4r-eWtu8fM9Doxo",
           "type": "public-key",
           "authenticatorAttachment": "platform",
           "clientExtensionResults": {},
           "response": {
-            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoieXkybVFFR0VPRjFVMjY3TEJXbm0wUkNmdno2Zkl5Qm80M3pKWHRkSFZRUSIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
+            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiTWZpRU14alE5T1JNdXJaSlg5aWdJWXZVZnJ0Q1NfdTdrOVVHMXA5WTZEVSIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
             "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAAAg",
-            "signature": "MEUCIQCGHZJT7PxrBwITkoP25hrA3QJkw7wYLlp8L2DHaFVCnQIgXkN08gX-GJs_dXMiQRbGPbxBizxmwZqwFFU9fCc-C-o",
-            "userHandle": "Y2FlM2NkMjktNjc1NS00MzllLTk5MjMtNDQ4YjQ1MmNiMWEy"
+            "signature": "MEUCIQCIOPrukZdMR4UBsB5M0Uu1o0zBqiIXkE8m9II38OBySgIgJxnjSLOcNNWYljF2NyaHJ-9mR_nqcbTi722s2jHUshg",
+            "userHandle": "YjIxYWY4ZjMtNjQzNS00YmVkLTkzYzUtYzk3MjFkN2JmY2Fm"
           }
         }
       },
@@ -1324,8 +1317,8 @@
       "response": {
         "verified": true,
         "user": {
-          "id": "cae3cd29-6755-439e-9923-448b452cb1a2",
-          "handle": "fixture-a-mv7en6a7"
+          "id": "b21af8f3-6435-4bed-93c5-c9721d7bfcaf",
+          "handle": "fixture-a-mv7eyg19"
         }
       },
       "cookie": "[not recorded]"
@@ -1335,19 +1328,18 @@
       "method": "POST",
       "path": "/api/passkey/login-options",
       "request": {
-        "handle": "fixture-a-mv7en6a7"
+        "handle": "fixture-a-mv7eyg19"
       },
       "status": 200,
       "response": {
-        "flowId": "rh1twR5Q7prMyDoECEy4v46syWqIWLh76aAm1r6pZsU",
+        "flowId": "NhnuHRAuDCq7fA-uTc69X8_Q08DI5692uBh18g_4-mA",
         "options": {
           "rpId": "localhost",
-          "challenge": "bSpYRuj5o8Q7RgYkKYGqAwaXXOceIaN9JEB5VkUs7QM",
+          "challenge": "YrWtNRQA5ib4zGFcf8chWGkb-y5jG2FlBPxGNn7QCjQ",
           "allowCredentials": [
             {
-              "id": "CUGKfv8GabXfh_piSb6fpQo4N6N0enq0gYIACuVXzT4",
+              "id": "iX3IRn84RpN0_L8REk8-Ek5C9LAr4r-eWtu8fM9Doxo",
               "transports": [
-                "internal",
                 "hybrid"
               ],
               "type": "public-key"
@@ -1367,18 +1359,18 @@
       "method": "POST",
       "path": "/api/passkey/login-verify",
       "request": {
-        "flowId": "rh1twR5Q7prMyDoECEy4v46syWqIWLh76aAm1r6pZsU",
+        "flowId": "NhnuHRAuDCq7fA-uTc69X8_Q08DI5692uBh18g_4-mA",
         "credential": {
-          "id": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48",
-          "rawId": "mYmgMLBPuPkUtpqHKYZnWdqxnKiYmh74ZyD13ezyu48",
+          "id": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec",
+          "rawId": "cHeWNXqqIytOmndXL9rwkzQqjHMeNi-0g_UDnV_WKec",
           "type": "public-key",
           "authenticatorAttachment": "platform",
           "clientExtensionResults": {},
           "response": {
-            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiYlNwWVJ1ajVvOFE3UmdZa0tZR3FBd2FYWE9jZUlhTjlKRUI1VmtVczdRTSIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
+            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiWXJXdE5SUUE1aWI0ekdGY2Y4Y2hXR2tiLXk1akcyRmxCUHhHTm43UUNqUSIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
             "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAABQ",
-            "signature": "MEUCIQCWqCFXZh34A1SjOdiObI0X-QyvJ27Cx9ur1VqPtZBv2QIgSPqKQ1ZPcBYCJgd0HWAkAAJv8lvoTEQ44dXmjX2FCgQ",
-            "userHandle": "Y2FlM2NkMjktNjc1NS00MzllLTk5MjMtNDQ4YjQ1MmNiMWEy"
+            "signature": "MEUCIBSZYSMS2g2w4Q0fnqAHolkywJZccfXe2b1I6atyvAtDAiEAgCZAetCSd2Aglb7i62Q_7CRPCEqbBV7nJHdEzMFmYS0",
+            "userHandle": "YjIxYWY4ZjMtNjQzNS00YmVkLTkzYzUtYzk3MjFkN2JmY2Fm"
           }
         }
       },
@@ -1393,19 +1385,18 @@
       "method": "POST",
       "path": "/api/passkey/login-options",
       "request": {
-        "handle": "fixture-a-mv7en6a7"
+        "handle": "fixture-a-mv7eyg19"
       },
       "status": 200,
       "response": {
-        "flowId": "rmxSYnvQe3fTY2aouNZrKec5dkHQky7g20wNQhBV-Kg",
+        "flowId": "GSJF2IADdBt0EQPN8BqdigOaKWki3-6qOww5225JFKk",
         "options": {
           "rpId": "localhost",
-          "challenge": "-nxSfc3yLCt2kZDHv2FY8Y36Yv10YgLkZEpNnNsrQIg",
+          "challenge": "vReAbQmZtBwbkTePt5eKgKGVcs1KMa48KZFvHanC4Go",
           "allowCredentials": [
             {
-              "id": "CUGKfv8GabXfh_piSb6fpQo4N6N0enq0gYIACuVXzT4",
+              "id": "iX3IRn84RpN0_L8REk8-Ek5C9LAr4r-eWtu8fM9Doxo",
               "transports": [
-                "internal",
                 "hybrid"
               ],
               "type": "public-key"
@@ -1428,8 +1419,8 @@
           "response": {
             "verified": true,
             "user": {
-              "id": "cae3cd29-6755-439e-9923-448b452cb1a2",
-              "handle": "fixture-a-mv7en6a7"
+              "id": "b21af8f3-6435-4bed-93c5-c9721d7bfcaf",
+              "handle": "fixture-a-mv7eyg19"
             }
           }
         },
@@ -1446,19 +1437,18 @@
       "method": "POST",
       "path": "/api/passkey/login-options",
       "request": {
-        "handle": "fixture-a-mv7en6a7"
+        "handle": "fixture-a-mv7eyg19"
       },
       "status": 200,
       "response": {
-        "flowId": "bCOQwPLrPBa5BW9m0SqlCBs_983Up8O4MVq_DqPcfXI",
+        "flowId": "-YlE_R5zyJtswexhrOfYVsrzv5cpBdVVMTpuNVF_KLE",
         "options": {
           "rpId": "localhost",
-          "challenge": "mMvILFxCNgZOTTZYw75ClUub6ritxILCJFaUYNdsh9s",
+          "challenge": "4R7gyIj1WmQNk4rTKSbhHBkGsNz-nfMvxfC5n0xhmjg",
           "allowCredentials": [
             {
-              "id": "CUGKfv8GabXfh_piSb6fpQo4N6N0enq0gYIACuVXzT4",
+              "id": "iX3IRn84RpN0_L8REk8-Ek5C9LAr4r-eWtu8fM9Doxo",
               "transports": [
-                "internal",
                 "hybrid"
               ],
               "type": "public-key"
@@ -1478,18 +1468,18 @@
       "method": "POST",
       "path": "/api/passkey/login-verify",
       "request": {
-        "flowId": "bCOQwPLrPBa5BW9m0SqlCBs_983Up8O4MVq_DqPcfXI",
+        "flowId": "-YlE_R5zyJtswexhrOfYVsrzv5cpBdVVMTpuNVF_KLE",
         "credential": {
-          "id": "CUGKfv8GabXfh_piSb6fpQo4N6N0enq0gYIACuVXzT4",
-          "rawId": "CUGKfv8GabXfh_piSb6fpQo4N6N0enq0gYIACuVXzT4",
+          "id": "iX3IRn84RpN0_L8REk8-Ek5C9LAr4r-eWtu8fM9Doxo",
+          "rawId": "iX3IRn84RpN0_L8REk8-Ek5C9LAr4r-eWtu8fM9Doxo",
           "type": "public-key",
           "authenticatorAttachment": "platform",
           "clientExtensionResults": {},
           "response": {
-            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoibU12SUxGeENOZ1pPVFRaWXc3NUNsVXViNnJpdHhJTENKRmFVWU5kc2g5cyIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
+            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiNFI3Z3lJajFXbVFOazRyVEtTYmhIQmtHc056LW5mTXZ4ZkM1bjB4aG1qZyIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
             "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAABA",
-            "signature": "MEUCIQC2EU3gnv1ei1-TKStfIcCk-WauNP7BfbhdWGdAYwubLwIgFc5UyM0L03SuVtM1i8VjwFB_LDM1BJWbKRcNftQlS9g",
-            "userHandle": "Y2FlM2NkMjktNjc1NS00MzllLTk5MjMtNDQ4YjQ1MmNiMWEy"
+            "signature": "MEYCIQD8ex11cE0h70Jjg1UXevYopu5tK6E5Vs7_qfEUXOF-QgIhAPXTDiCGAu2PqA2CrAWV4AZxw1sVis-am5uyJRRxD49u",
+            "userHandle": "YjIxYWY4ZjMtNjQzNS00YmVkLTkzYzUtYzk3MjFkN2JmY2Fm"
           }
         }
       },
@@ -1497,8 +1487,8 @@
       "response": {
         "verified": true,
         "user": {
-          "id": "cae3cd29-6755-439e-9923-448b452cb1a2",
-          "handle": "fixture-a-mv7en6a7"
+          "id": "b21af8f3-6435-4bed-93c5-c9721d7bfcaf",
+          "handle": "fixture-a-mv7eyg19"
         }
       },
       "cookie": "[not recorded]"
@@ -1508,7 +1498,7 @@
       "method": "POST",
       "path": "/api/passkey/delete-key",
       "request": {
-        "id": "CUGKfv8GabXfh_piSb6fpQo4N6N0enq0gYIACuVXzT4"
+        "id": "iX3IRn84RpN0_L8REk8-Ek5C9LAr4r-eWtu8fM9Doxo"
       },
       "status": 200,
       "response": {
@@ -1534,7 +1524,777 @@
       "method": "POST",
       "path": "/api/passkey/delete-key",
       "request": {
-        "id": "jT5BfdV9NLFeNUppFqMidObpowjTM2Cu3tv9S--HSUk"
+        "id": "tkwX2iWc5YU0U0FDXWXbKSb6BlZDnPvT9LKIqeSm5zE"
+      },
+      "status": 200,
+      "response": {
+        "deleted": true,
+        "remaining": 0,
+        "loggedOut": true
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR PC",
+      "method": "POST",
+      "path": "/api/phone-pair/start",
+      "request": {
+        "mode": "signup",
+        "handle": "qr-mv7eyg19",
+        "name": "휴대폰 검사 1",
+        "storage": "기기 자체"
+      },
+      "status": 200,
+      "response": {
+        "pairId": "c34b88fd-55f7-4151-a90d-9112de12f0aa",
+        "phoneUrl": "[redacted]",
+        "expiresAt": 1791940548573
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR phone",
+      "method": "POST",
+      "path": "/api/phone-pair/info",
+      "request": {
+        "pairTicket": "[redacted]"
+      },
+      "status": 200,
+      "response": {
+        "handle": "qr-mv7eyg19",
+        "mode": "signup",
+        "name": "휴대폰 검사 1",
+        "storage": "기기 자체",
+        "expiresAt": 1791940548573
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR PC",
+      "method": "POST",
+      "path": "/api/phone-pair/consume",
+      "request": {
+        "pairId": "c34b88fd-55f7-4151-a90d-9112de12f0aa"
+      },
+      "status": 401,
+      "response": {
+        "error": "QR 인증이 완료되지 않았거나 이미 사용됐습니다."
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR phone",
+      "method": "POST",
+      "path": "/api/passkey/register-options",
+      "request": {
+        "pairTicket": "[redacted]"
+      },
+      "status": 200,
+      "response": {
+        "flowId": "hM4I2yQWjTVugAVywkZ4CcLlNw6iQGqmJW8LApLjNBM",
+        "options": {
+          "challenge": "RtKH2J0knIQ3bR9JtJBKHq0y-agDJf1mJc51tejssBU",
+          "rp": {
+            "name": "함찬원의 비공개 노트",
+            "id": "localhost"
+          },
+          "user": {
+            "id": "ZmFjNGU2ZDEtOTMwZC00ZjZkLTk1M2YtZDRiNWUyMTA5NzYw",
+            "name": "qr-mv7eyg19",
+            "displayName": ""
+          },
+          "pubKeyCredParams": [
+            {
+              "alg": -7,
+              "type": "public-key"
+            },
+            {
+              "alg": -257,
+              "type": "public-key"
+            }
+          ],
+          "timeout": 120000,
+          "attestation": "none",
+          "excludeCredentials": [],
+          "authenticatorSelection": {
+            "residentKey": "required",
+            "userVerification": "required",
+            "requireResidentKey": true,
+            "authenticatorAttachment": "platform"
+          },
+          "extensions": {
+            "credProps": true
+          },
+          "hints": [
+            "client-device"
+          ]
+        }
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR phone",
+      "method": "POST",
+      "path": "/api/passkey/register-verify",
+      "request": {
+        "flowId": "hM4I2yQWjTVugAVywkZ4CcLlNw6iQGqmJW8LApLjNBM",
+        "credential": {
+          "id": "Q_cDXEfXXQewBYrZJLowGlfbIZ6hxbdgYg3BqO6A6PI",
+          "rawId": "Q_cDXEfXXQewBYrZJLowGlfbIZ6hxbdgYg3BqO6A6PI",
+          "type": "public-key",
+          "authenticatorAttachment": "platform",
+          "clientExtensionResults": {
+            "credProps": {
+              "rk": true
+            }
+          },
+          "response": {
+            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiUnRLSDJKMGtuSVEzYlI5SnRKQktIcTB5LWFnREpmMW1KYzUxdGVqc3NCVSIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
+            "attestationObject": "o2NmbXRkbm9uZWhhdXRoRGF0YVikSZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAAAAAAAAAAAAAAAAAAAAAAAAIEP3A1xH110HsAWK2SS6MBpX2yGeocW3YGINwajugOjypQECAyYgASFYIAjdPUDSuo72BuyfaDvWKp_oiVjK8IlOhfMK0X74HHw_Ilgghkk7O73dmjKC0iHY9o1ui-TLPYIdVt8mEsgZzzztk7FnYXR0U3RtdKA",
+            "transports": [
+              "internal"
+            ]
+          }
+        }
+      },
+      "status": 200,
+      "response": {
+        "verified": true,
+        "user": {
+          "id": "fac4e6d1-930d-4f6d-953f-d4b5e2109760",
+          "handle": "qr-mv7eyg19"
+        },
+        "publicKey": "pQECAyYgASFYIAjdPUDSuo72BuyfaDvWKp_oiVjK8IlOhfMK0X74HHw_Ilgghkk7O73dmjKC0iHY9o1ui-TLPYIdVt8mEsgZzzztk7E",
+        "keyType": "COSE 공개키 · 개인키와 비밀번호는 저장하지 않음"
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR PC",
+      "method": "GET",
+      "path": "/api/phone-pair/status?id=c34b88fd-55f7-4151-a90d-9112de12f0aa",
+      "request": null,
+      "status": 200,
+      "response": {
+        "state": "ready",
+        "expiresAt": 1791940548573
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "other PC",
+      "method": "POST",
+      "path": "/api/phone-pair/consume",
+      "request": {
+        "pairId": "c34b88fd-55f7-4151-a90d-9112de12f0aa"
+      },
+      "status": 401,
+      "response": {
+        "error": "이 브라우저에서 만든 QR이 아닙니다."
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR PC",
+      "method": "POST",
+      "path": "/api/phone-pair/consume",
+      "request": {
+        "pairId": "c34b88fd-55f7-4151-a90d-9112de12f0aa"
+      },
+      "status": 200,
+      "response": {
+        "connected": true,
+        "user": {
+          "id": "fac4e6d1-930d-4f6d-953f-d4b5e2109760",
+          "handle": "qr-mv7eyg19"
+        }
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR PC",
+      "method": "GET",
+      "path": "/api/private-notes",
+      "request": null,
+      "status": 200,
+      "response": {
+        "notes": [
+          {
+            "id": "01a20e0e-f755-4f3a-a6de-ffca7d884af2",
+            "user_id": "fac4e6d1-930d-4f6d-953f-d4b5e2109760",
+            "title": "프로젝트 메모",
+            "content": "가상 자료 · qr-mv7eyg19의 실습 A: 방화벽 규칙을 세 가지 경우로 나누어 확인한다.",
+            "updated_at": "2026-10-14T01:10:48.643Z"
+          },
+          {
+            "id": "05a82c55-0cb4-48b9-8eec-d466bc6f44f6",
+            "user_id": "fac4e6d1-930d-4f6d-953f-d4b5e2109760",
+            "title": "나의 회고",
+            "content": "가상 자료 · qr-mv7eyg19의 회고 C: 오류가 나면 로그를 먼저 읽고 변경은 한 번에 하나씩 한다.",
+            "updated_at": "2026-10-14T01:10:48.643Z"
+          },
+          {
+            "id": "0b25b614-4620-49d8-9753-06769126fb55",
+            "user_id": "fac4e6d1-930d-4f6d-953f-d4b5e2109760",
+            "title": "지원 계획",
+            "content": "가상 자료 · qr-mv7eyg19의 가상 기업 B: 네트워크 실습 과정을 정리한 뒤 지원 준비를 한다.",
+            "updated_at": "2026-10-14T01:10:48.643Z"
+          }
+        ],
+        "userId": "fac4e6d1-930d-4f6d-953f-d4b5e2109760"
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR PC",
+      "method": "POST",
+      "path": "/api/phone-pair/consume",
+      "request": {
+        "pairId": "c34b88fd-55f7-4151-a90d-9112de12f0aa"
+      },
+      "status": 401,
+      "response": {
+        "error": "이 브라우저에서 만든 QR이 아닙니다."
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR phone",
+      "method": "POST",
+      "path": "/api/phone-pair/info",
+      "request": {
+        "pairTicket": "[redacted]"
+      },
+      "status": 410,
+      "response": {
+        "error": "이미 사용했거나 만료된 QR입니다. PC에서 새 QR을 띄우세요."
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR PC",
+      "method": "POST",
+      "path": "/api/phone-pair/start",
+      "request": {
+        "mode": "signup",
+        "name": "휴대폰 검사 2",
+        "storage": "기기 자체"
+      },
+      "status": 200,
+      "response": {
+        "pairId": "2b0e4a2a-9871-4366-9a7a-da7c8840e601",
+        "phoneUrl": "[redacted]",
+        "expiresAt": 1791940548760
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR phone",
+      "method": "POST",
+      "path": "/api/passkey/register-options",
+      "request": {
+        "pairTicket": "[redacted]"
+      },
+      "status": 200,
+      "response": {
+        "flowId": "rkF9u36o6yuDHrMeEbTXUDy1dRpa3dnTWXSRQvOwNTA",
+        "options": {
+          "challenge": "_gn3kn7HoIIlwuZ0vt3xIs8SQFbrlGbknjskdQ0VieI",
+          "rp": {
+            "name": "함찬원의 비공개 노트",
+            "id": "localhost"
+          },
+          "user": {
+            "id": "ZmFjNGU2ZDEtOTMwZC00ZjZkLTk1M2YtZDRiNWUyMTA5NzYw",
+            "name": "qr-mv7eyg19",
+            "displayName": ""
+          },
+          "pubKeyCredParams": [
+            {
+              "alg": -7,
+              "type": "public-key"
+            },
+            {
+              "alg": -257,
+              "type": "public-key"
+            }
+          ],
+          "timeout": 120000,
+          "attestation": "none",
+          "excludeCredentials": [
+            {
+              "id": "Q_cDXEfXXQewBYrZJLowGlfbIZ6hxbdgYg3BqO6A6PI",
+              "transports": [
+                "internal"
+              ],
+              "type": "public-key"
+            }
+          ],
+          "authenticatorSelection": {
+            "residentKey": "required",
+            "userVerification": "required",
+            "requireResidentKey": true,
+            "authenticatorAttachment": "platform"
+          },
+          "extensions": {
+            "credProps": true
+          },
+          "hints": [
+            "client-device"
+          ]
+        }
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR phone",
+      "method": "POST",
+      "path": "/api/passkey/register-verify",
+      "request": {
+        "flowId": "rkF9u36o6yuDHrMeEbTXUDy1dRpa3dnTWXSRQvOwNTA",
+        "credential": {
+          "id": "OwYnTq-eMnxiiMSV99Be1xqZ7GmtwuCtrQxci0BV9oI",
+          "rawId": "OwYnTq-eMnxiiMSV99Be1xqZ7GmtwuCtrQxci0BV9oI",
+          "type": "public-key",
+          "authenticatorAttachment": "platform",
+          "clientExtensionResults": {
+            "credProps": {
+              "rk": true
+            }
+          },
+          "response": {
+            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiX2duM2tuN0hvSUlsd3VaMHZ0M3hJczhTUUZicmxHYmtuanNrZFEwVmllSSIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
+            "attestationObject": "o2NmbXRkbm9uZWhhdXRoRGF0YVikSZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAAAAAAAAAAAAAAAAAAAAAAAAIDsGJ06vnjJ8YojElffQXtcamexprcLgra0MXItAVfaCpQECAyYgASFYIClid77gAgMEr1a4zZWnzb-N4UnQShT3WIQFqWJKemamIlggtPVLANT0dw-vZRFVQ5uH2S-P7uJCZnflb8MqoKTENtNnYXR0U3RtdKA",
+            "transports": [
+              "internal"
+            ]
+          }
+        }
+      },
+      "status": 200,
+      "response": {
+        "verified": true,
+        "user": {
+          "id": "fac4e6d1-930d-4f6d-953f-d4b5e2109760",
+          "handle": "qr-mv7eyg19"
+        },
+        "publicKey": "pQECAyYgASFYIClid77gAgMEr1a4zZWnzb-N4UnQShT3WIQFqWJKemamIlggtPVLANT0dw-vZRFVQ5uH2S-P7uJCZnflb8MqoKTENtM",
+        "keyType": "COSE 공개키 · 개인키와 비밀번호는 저장하지 않음"
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR PC",
+      "method": "POST",
+      "path": "/api/phone-pair/consume",
+      "request": {
+        "pairId": "2b0e4a2a-9871-4366-9a7a-da7c8840e601"
+      },
+      "status": 200,
+      "response": {
+        "connected": true,
+        "user": {
+          "id": "fac4e6d1-930d-4f6d-953f-d4b5e2109760",
+          "handle": "qr-mv7eyg19"
+        }
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR PC",
+      "method": "GET",
+      "path": "/api/passkey/keys",
+      "request": null,
+      "status": 200,
+      "response": {
+        "keys": [
+          {
+            "id": "Q_cDXEfXXQewBYrZJLowGlfbIZ6hxbdgYg3BqO6A6PI",
+            "name": "휴대폰 검사 1",
+            "storage": "기기 자체",
+            "created_at": "2026-10-14T01:10:48.643Z",
+            "public_key": "pQECAyYgASFYIAjdPUDSuo72BuyfaDvWKp_oiVjK8IlOhfMK0X74HHw_Ilgghkk7O73dmjKC0iHY9o1ui-TLPYIdVt8mEsgZzzztk7E",
+            "device_type": "singleDevice",
+            "backed_up": 0
+          },
+          {
+            "id": "OwYnTq-eMnxiiMSV99Be1xqZ7GmtwuCtrQxci0BV9oI",
+            "name": "휴대폰 검사 2",
+            "storage": "기기 자체",
+            "created_at": "2026-10-14T01:10:48.811Z",
+            "public_key": "pQECAyYgASFYIClid77gAgMEr1a4zZWnzb-N4UnQShT3WIQFqWJKemamIlggtPVLANT0dw-vZRFVQ5uH2S-P7uJCZnflb8MqoKTENtM",
+            "device_type": "singleDevice",
+            "backed_up": 0
+          }
+        ]
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR PC",
+      "method": "POST",
+      "path": "/api/passkey/logout",
+      "request": {},
+      "status": 200,
+      "response": {
+        "loggedOut": true
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR PC",
+      "method": "POST",
+      "path": "/api/phone-pair/start",
+      "request": {
+        "mode": "login",
+        "handle": "qr-mv7eyg19"
+      },
+      "status": 200,
+      "response": {
+        "pairId": "3a7be83b-830a-444d-ad13-5b50a26e7cc9",
+        "phoneUrl": "[redacted]",
+        "expiresAt": 1791940548889
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR phone",
+      "method": "POST",
+      "path": "/api/passkey/login-options",
+      "request": {
+        "pairTicket": "[redacted]",
+        "handle": "fixture-a-mv7eyg19"
+      },
+      "status": 200,
+      "response": {
+        "flowId": "NxRvyv121x92bWQEprrwLaeWEkj31MoX-7Zft3q9ab8",
+        "options": {
+          "rpId": "localhost",
+          "challenge": "nKBdCnkfwKN9KF8k2dKqDfysecSkBNY99TwoK6w4zhs",
+          "allowCredentials": [
+            {
+              "id": "Q_cDXEfXXQewBYrZJLowGlfbIZ6hxbdgYg3BqO6A6PI",
+              "transports": [
+                "internal"
+              ],
+              "type": "public-key"
+            },
+            {
+              "id": "OwYnTq-eMnxiiMSV99Be1xqZ7GmtwuCtrQxci0BV9oI",
+              "transports": [
+                "internal"
+              ],
+              "type": "public-key"
+            }
+          ],
+          "timeout": 120000,
+          "userVerification": "required",
+          "hints": [
+            "client-device"
+          ]
+        }
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR phone",
+      "method": "POST",
+      "path": "/api/passkey/login-verify",
+      "request": {
+        "flowId": "NxRvyv121x92bWQEprrwLaeWEkj31MoX-7Zft3q9ab8",
+        "credential": {
+          "id": "OwYnTq-eMnxiiMSV99Be1xqZ7GmtwuCtrQxci0BV9oI",
+          "rawId": "OwYnTq-eMnxiiMSV99Be1xqZ7GmtwuCtrQxci0BV9oI",
+          "type": "public-key",
+          "authenticatorAttachment": "platform",
+          "clientExtensionResults": {},
+          "response": {
+            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoibktCZENua2Z3S045S0Y4azJkS3FEZnlzZWNTa0JOWTk5VHdvSzZ3NHpocyIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
+            "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAAAQ",
+            "signature": "MEQCIDmIs6tK0pNQNszlmDpe2eQSNAGHxjqrI_VUA8meVFqLAiBIGnFa9HU87vud77UxQY5nmS7-bjn3xbAIKqXmgFxtMQ",
+            "userHandle": "ZmFjNGU2ZDEtOTMwZC00ZjZkLTk1M2YtZDRiNWUyMTA5NzYw"
+          }
+        }
+      },
+      "status": 200,
+      "response": {
+        "verified": true,
+        "user": {
+          "id": "fac4e6d1-930d-4f6d-953f-d4b5e2109760",
+          "handle": "qr-mv7eyg19"
+        }
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR PC",
+      "method": "POST",
+      "path": "/api/phone-pair/consume",
+      "request": {
+        "pairId": "3a7be83b-830a-444d-ad13-5b50a26e7cc9"
+      },
+      "status": 200,
+      "response": {
+        "connected": true,
+        "user": {
+          "id": "fac4e6d1-930d-4f6d-953f-d4b5e2109760",
+          "handle": "qr-mv7eyg19"
+        }
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR PC",
+      "method": "POST",
+      "path": "/api/phone-pair/start",
+      "request": {
+        "name": "취소 키",
+        "storage": "기기 자체"
+      },
+      "status": 200,
+      "response": {
+        "pairId": "18ddd8c6-ae6e-4cc4-81d1-4494d70c5188",
+        "phoneUrl": "[redacted]",
+        "expiresAt": 1791940548981
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR phone",
+      "method": "POST",
+      "path": "/api/passkey/register-options",
+      "request": {
+        "pairTicket": "[redacted]"
+      },
+      "status": 200,
+      "response": {
+        "flowId": "jL43jaIy9helEvdJs0hQxjAWISrhRApSCQJnwQB1mIY",
+        "options": {
+          "challenge": "EKhk2yEuuQxSwtkbmXB0AvZQpg4_pEiV3TRhh76CgTM",
+          "rp": {
+            "name": "함찬원의 비공개 노트",
+            "id": "localhost"
+          },
+          "user": {
+            "id": "ZmFjNGU2ZDEtOTMwZC00ZjZkLTk1M2YtZDRiNWUyMTA5NzYw",
+            "name": "qr-mv7eyg19",
+            "displayName": ""
+          },
+          "pubKeyCredParams": [
+            {
+              "alg": -7,
+              "type": "public-key"
+            },
+            {
+              "alg": -257,
+              "type": "public-key"
+            }
+          ],
+          "timeout": 120000,
+          "attestation": "none",
+          "excludeCredentials": [
+            {
+              "id": "Q_cDXEfXXQewBYrZJLowGlfbIZ6hxbdgYg3BqO6A6PI",
+              "transports": [
+                "internal"
+              ],
+              "type": "public-key"
+            },
+            {
+              "id": "OwYnTq-eMnxiiMSV99Be1xqZ7GmtwuCtrQxci0BV9oI",
+              "transports": [
+                "internal"
+              ],
+              "type": "public-key"
+            }
+          ],
+          "authenticatorSelection": {
+            "residentKey": "required",
+            "userVerification": "required",
+            "requireResidentKey": true,
+            "authenticatorAttachment": "platform"
+          },
+          "extensions": {
+            "credProps": true
+          },
+          "hints": [
+            "client-device"
+          ]
+        }
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR PC",
+      "method": "POST",
+      "path": "/api/phone-pair/cancel",
+      "request": {},
+      "status": 200,
+      "response": {
+        "cancelled": true
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR phone",
+      "method": "POST",
+      "path": "/api/passkey/register-verify",
+      "request": {
+        "flowId": "jL43jaIy9helEvdJs0hQxjAWISrhRApSCQJnwQB1mIY",
+        "credential": {
+          "id": "AvfIWYzp_88__dXjixlQTaV1lzUyQM0pRyhYg4W-RcQ",
+          "rawId": "AvfIWYzp_88__dXjixlQTaV1lzUyQM0pRyhYg4W-RcQ",
+          "type": "public-key",
+          "authenticatorAttachment": "platform",
+          "clientExtensionResults": {
+            "credProps": {
+              "rk": true
+            }
+          },
+          "response": {
+            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiRUtoazJ5RXV1UXhTd3RrYm1YQjBBdlpRcGc0X3BFaVYzVFJoaDc2Q2dUTSIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
+            "attestationObject": "o2NmbXRkbm9uZWhhdXRoRGF0YVikSZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAL3yFmM6f_PP_3V44sZUE2ldZc1MkDNKUcoWIOFvkXEpQECAyYgASFYIETgTPJQzhXiqC2uyVMJqGliVa-aZW6B0hI8vcBqMw9FIlggvWGbhKnyIvLvE75voID65G8msdGKVxmyIa_2RC_o6z5nYXR0U3RtdKA",
+            "transports": [
+              "internal"
+            ]
+          }
+        }
+      },
+      "status": 410,
+      "response": {
+        "error": "QR 연결 시간이 끝났습니다. PC에서 새 QR을 띄우세요."
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR PC",
+      "method": "POST",
+      "path": "/api/phone-pair/start",
+      "request": {
+        "name": "로그아웃 키",
+        "storage": "기기 자체"
+      },
+      "status": 200,
+      "response": {
+        "pairId": "2f692963-742c-4a30-b702-abb697f7a121",
+        "phoneUrl": "[redacted]",
+        "expiresAt": 1791940549058
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR PC",
+      "method": "POST",
+      "path": "/api/passkey/logout",
+      "request": {},
+      "status": 200,
+      "response": {
+        "loggedOut": true
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR phone",
+      "method": "POST",
+      "path": "/api/passkey/register-options",
+      "request": {
+        "pairTicket": "[redacted]"
+      },
+      "status": 401,
+      "response": {
+        "error": "PC 로그인이 끝났습니다. PC에서 다시 들어오세요."
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR PC",
+      "method": "POST",
+      "path": "/api/passkey/login-options",
+      "request": {
+        "handle": "qr-mv7eyg19"
+      },
+      "status": 200,
+      "response": {
+        "flowId": "suhUBfU4hZSR5ypZA1qLfDForJD5wAsemfgRF4kYFd4",
+        "options": {
+          "rpId": "localhost",
+          "challenge": "FrQVBlrUc4TNxSFCsi4cLc0mQ9M5aNils1y52rBq5hY",
+          "allowCredentials": [
+            {
+              "id": "Q_cDXEfXXQewBYrZJLowGlfbIZ6hxbdgYg3BqO6A6PI",
+              "transports": [
+                "hybrid"
+              ],
+              "type": "public-key"
+            },
+            {
+              "id": "OwYnTq-eMnxiiMSV99Be1xqZ7GmtwuCtrQxci0BV9oI",
+              "transports": [
+                "hybrid"
+              ],
+              "type": "public-key"
+            }
+          ],
+          "timeout": 120000,
+          "userVerification": "required",
+          "hints": [
+            "hybrid"
+          ]
+        }
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR PC",
+      "method": "POST",
+      "path": "/api/passkey/login-verify",
+      "request": {
+        "flowId": "suhUBfU4hZSR5ypZA1qLfDForJD5wAsemfgRF4kYFd4",
+        "credential": {
+          "id": "OwYnTq-eMnxiiMSV99Be1xqZ7GmtwuCtrQxci0BV9oI",
+          "rawId": "OwYnTq-eMnxiiMSV99Be1xqZ7GmtwuCtrQxci0BV9oI",
+          "type": "public-key",
+          "authenticatorAttachment": "platform",
+          "clientExtensionResults": {},
+          "response": {
+            "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiRnJRVkJsclVjNFROeFNGQ3NpNGNMYzBtUTlNNWFOaWxzMXk1MnJCcTVoWSIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODc4OCIsImNyb3NzT3JpZ2luIjpmYWxzZX0",
+            "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAAAg",
+            "signature": "MEYCIQCjDS36477fKX6ZFTCwf5vICzOj-wPuFjWEWRPESNSTcgIhANWg1QQWN2KcIhD8j3RpmpbvW8luqeru9StagYpoXUvI",
+            "userHandle": "ZmFjNGU2ZDEtOTMwZC00ZjZkLTk1M2YtZDRiNWUyMTA5NzYw"
+          }
+        }
+      },
+      "status": 200,
+      "response": {
+        "verified": true,
+        "user": {
+          "id": "fac4e6d1-930d-4f6d-953f-d4b5e2109760",
+          "handle": "qr-mv7eyg19"
+        }
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR PC",
+      "method": "POST",
+      "path": "/api/passkey/delete-key",
+      "request": {
+        "id": "Q_cDXEfXXQewBYrZJLowGlfbIZ6hxbdgYg3BqO6A6PI"
+      },
+      "status": 200,
+      "response": {
+        "deleted": true,
+        "remaining": 1,
+        "loggedOut": false
+      },
+      "cookie": "[not recorded]"
+    },
+    {
+      "browser": "QR PC",
+      "method": "POST",
+      "path": "/api/passkey/delete-key",
+      "request": {
+        "id": "OwYnTq-eMnxiiMSV99Be1xqZ7GmtwuCtrQxci0BV9oI"
       },
       "status": 200,
       "response": {
@@ -1549,7 +2309,7 @@
       "method": "POST",
       "path": "/api/passkey/register-options",
       "request": {
-        "handle": "csrf-mv7en6a7",
+        "handle": "csrf-mv7eyg19",
         "name": "검사",
         "storage": "기기 자체"
       },

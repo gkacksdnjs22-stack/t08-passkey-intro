@@ -4,6 +4,7 @@ import { generateRegistrationOptions, verifyRegistrationResponse, generateAuthen
 const LIVE_ORIGIN = 'https://t01-chanwon-network-intro.gkacksdnjs22.chatgpt.site';
 const SESSION_COOKIE = 't08_session';
 const FLOW_COOKIE = 't08_flow';
+const PAIR_COOKIE = 't08_pair';
 const TTL = 12 * 60 * 60 * 1000;
 type Row = Record<string, any>;
 class HttpError extends Error { constructor(public status: number, message: string) { super(message); } }
@@ -52,31 +53,41 @@ async function consume(req: Request, id: unknown, kinds: string[]) {
   // DELETE RETURNING consumes the challenge atomically before any verification, including failed attempts.
   const c = await db().prepare('DELETE FROM passkey_challenges WHERE id=? AND browser_hash=? AND expires_at>? RETURNING *').bind(id,await hash(flow),now()).first<Row>();
   if (!c || !kinds.includes(c.kind)) throw new HttpError(401, '이미 사용했거나 만료된 인증 질문입니다. 다시 시작하세요.');
-  if (c.session_hash) { const s = await session(req); if (s!.hash !== c.session_hash || s!.user_id !== c.user_id) throw new HttpError(403, '다른 로그인에서 만든 질문입니다.'); }
+  if (c.pair_id) {
+    const pair=await db().prepare('SELECT id FROM phone_pairs WHERE id=? AND state=? AND expires_at>?').bind(c.pair_id,'pending',now()).first();
+    if (!pair) throw new HttpError(410,'QR 연결 시간이 끝났습니다. PC에서 새 QR을 띄우세요.');
+  }
+  if (c.session_hash) {
+    if(c.pair_id){const s=await db().prepare('SELECT s.hash FROM passkey_sessions s JOIN passkeys p ON p.id=s.credential_id WHERE s.hash=? AND s.user_id=? AND s.expires_at>? AND p.revoked_at IS NULL').bind(c.session_hash,c.user_id,now()).first();if(!s)throw new HttpError(401,'PC 로그인이 끝났습니다. PC에서 다시 들어오세요.');}
+    else { const s = await session(req); if (s!.hash !== c.session_hash || s!.user_id !== c.user_id) throw new HttpError(403, '다른 로그인에서 만든 질문입니다.'); }
+  }
   return c;
 }
 async function options(req: Request, action: string, input: Row) {
   const { rpID } = config(req); const s = await session(req,false);
+  const pair=input.pairTicket?await pairByTicket(input.pairTicket):null;
   const flow = random(), id = random(); let kind: string, userId: string, userHandle: string, name = '', storage = '', sessionHash = null;
   let result;
   if (action === 'register-options') {
-    name = text(input.name,'패스키 이름'); storage = text(input.storage,'저장 위치');
+    if(pair&&pair.mode==='login')throw new HttpError(403,'이 QR은 로그인용입니다.');
+    name = text(pair?.name??input.name,'패스키 이름'); storage = text(pair?.storage??input.storage,'저장 위치');
     if (!['구글 비밀번호 관리자','기기 자체','보안 키','기타 패스키 관리자'].includes(storage)) throw new HttpError(400,'저장 위치를 선택하세요.');
-    kind = s ? 'add' : 'signup'; userId = s?.user_id ?? crypto.randomUUID(); userHandle = s?.handle ?? handle(input.handle); sessionHash = s?.hash ?? null;
-    if (!s && await db().prepare('SELECT id FROM passkey_users WHERE handle=?').bind(userHandle).first()) throw new HttpError(409,'이미 사용 중인 별명입니다. 기존 패스키로 들어오거나 다른 별명을 쓰세요.');
-    const keys = s ? (await db().prepare('SELECT id,transports FROM passkeys WHERE user_id=? AND revoked_at IS NULL').bind(userId).all<Row>()).results : [];
-    result = await generateRegistrationOptions({ rpName:'함찬원의 비공개 노트', rpID, userName:userHandle, userID:new TextEncoder().encode(userId), attestationType:'none', timeout:120000, preferredAuthenticatorType:storage==='보안 키'?'securityKey':'remoteDevice', supportedAlgorithmIDs:[-7,-257], excludeCredentials:keys.map(k=>({ id:k.id, transports:JSON.parse(k.transports) })), authenticatorSelection:{residentKey:'required',userVerification:'required'} });
+    kind = pair?(pair.mode==='add'?'add':'signup'):(s?'add':'signup'); userId=pair?.user_id??s?.user_id??crypto.randomUUID();userHandle=pair?.handle??s?.handle??handle(input.handle);sessionHash=pair?pair.session_hash:(s?.hash??null);
+    if (kind==='signup' && await db().prepare('SELECT id FROM passkey_users WHERE handle=?').bind(userHandle).first()) throw new HttpError(409,'이미 사용 중인 별명입니다. 기존 패스키로 들어오거나 다른 별명을 쓰세요.');
+    const keys = kind==='add' ? (await db().prepare('SELECT id,transports FROM passkeys WHERE user_id=? AND revoked_at IS NULL').bind(userId).all<Row>()).results : [];
+    result = await generateRegistrationOptions({ rpName:'함찬원의 비공개 노트', rpID, userName:userHandle, userID:new TextEncoder().encode(userId), attestationType:'none', timeout:120000, preferredAuthenticatorType:storage==='보안 키'?'securityKey':pair?'localDevice':'remoteDevice', supportedAlgorithmIDs:[-7,-257], excludeCredentials:keys.map(k=>({ id:k.id, transports:JSON.parse(k.transports) })), authenticatorSelection:{residentKey:'required',userVerification:'required'} });
   } else {
-    kind = 'login'; userHandle = handle(input.handle);
+    if(pair&&pair.mode!=='login')throw new HttpError(403,'이 QR은 등록용입니다.');
+    kind = 'login'; userHandle = pair?.handle??handle(input.handle);
     const u = await db().prepare('SELECT id FROM passkey_users WHERE handle=?').bind(userHandle).first<Row>(); userId = u?.id ?? 'missing';
     const keys = u ? (await db().prepare('SELECT id,transports FROM passkeys WHERE user_id=? AND revoked_at IS NULL').bind(u.id).all<Row>()).results : [];
-    const authentication = await generateAuthenticationOptions({ rpID, timeout:120000, userVerification:'required', allowCredentials:keys.length ? keys.map(k=>({id:k.id,transports:[...new Set([...JSON.parse(k.transports),'hybrid'])]})) : [{id:random()}] });
-    result = { ...authentication, hints:['hybrid'] };
+    const authentication = await generateAuthenticationOptions({ rpID, timeout:120000, userVerification:'required', allowCredentials:keys.length ? keys.map(k=>({id:k.id,transports:pair?JSON.parse(k.transports):['hybrid']})) : [{id:random()}] });
+    result = { ...authentication, hints:[pair?'client-device':'hybrid'] };
   }
   await db().batch([
     db().prepare('DELETE FROM passkey_challenges WHERE expires_at<=? OR browser_hash=?').bind(now(),await hash(cookie(req,FLOW_COOKIE))),
     db().prepare('DELETE FROM passkey_sessions WHERE expires_at<=?').bind(now()),
-    db().prepare('INSERT INTO passkey_challenges (id,browser_hash,kind,challenge,user_id,handle,name,storage,session_hash,expires_at) VALUES (?,?,?,?,?,?,?,?,?,?)').bind(id,await hash(flow),kind,result.challenge,userId,userHandle,name,storage,sessionHash,now()+5*60*1000),
+    db().prepare('INSERT INTO passkey_challenges (id,browser_hash,kind,challenge,user_id,handle,name,storage,session_hash,expires_at,pair_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)').bind(id,await hash(flow),kind,result.challenge,userId,userHandle,name,storage,sessionHash,now()+5*60*1000,pair?.id??null),
   ]);
   return json({ flowId:id, options:result },200,[setCookie(req,FLOW_COOKIE,flow,300)]);
 }
@@ -101,6 +112,7 @@ async function register(req: Request, input: Row) {
   let results;
   try { results=await db().batch(cmds); } catch { throw new HttpError(409,'별명 또는 패스키가 이미 등록됐습니다. 다시 시작하세요.'); }
   if (!results.at(-1)?.meta.changes) throw new HttpError(401,'등록 중 로그인이 끝났습니다. 다시 들어오세요.');
+  if(c.pair_id) await readyPair(c,key.id);
   return json({verified:true,user:{id:c.user_id,handle:c.handle},publicKey:encode(key.publicKey),keyType:'COSE 공개키 · 개인키와 비밀번호는 저장하지 않음'},200,[await createSession(req,c.user_id,key.id),setCookie(req,FLOW_COOKIE,'',0)]);
 }
 async function login(req: Request, input: Row) {
@@ -113,6 +125,7 @@ async function login(req: Request, input: Row) {
   if (!verified.verified) throw new HttpError(401,'패스키 서명이 거절됐습니다.');
   const update = await db().prepare('UPDATE passkeys SET counter=? WHERE id=? AND user_id=? AND counter=? AND revoked_at IS NULL').bind(verified.authenticationInfo.newCounter,k.id,c.user_id,k.counter).run();
   if (!update.meta.changes) throw new HttpError(401,'패스키 상태가 바뀌었습니다. 다시 들어오세요.');
+  if(c.pair_id) await readyPair(c,k.id);
   return json({verified:true,user:{id:c.user_id,handle:c.handle}},200,[await createSession(req,c.user_id,k.id),setCookie(req,FLOW_COOKIE,'',0)]);
 }
 export async function authRoute(req: Request, action: string) {
@@ -155,3 +168,51 @@ export async function notesRoute(req: Request) {
   } catch(e) { return failure(e); }
 }
 function failure(e: unknown) { return e instanceof HttpError ? json({error:e.message},e.status) : json({error:'요청을 처리하지 못했습니다. 잠시 뒤 다시 시도하세요.'},500); }
+
+async function pairByTicket(ticket: unknown) {
+  if(typeof ticket!=='string'||ticket.length!==43)throw new HttpError(400,'QR 연결 주소를 확인하세요.');
+  const pair=await db().prepare('SELECT * FROM phone_pairs WHERE ticket_hash=? AND state=? AND expires_at>?').bind(await hash(ticket),'pending',now()).first<Row>();
+  if(!pair)throw new HttpError(410,'이미 사용했거나 만료된 QR입니다. PC에서 새 QR을 띄우세요.');
+  if(pair.mode==='add') {const valid=await db().prepare('SELECT s.hash FROM passkey_sessions s JOIN passkeys p ON p.id=s.credential_id WHERE s.hash=? AND s.user_id=? AND s.expires_at>? AND p.revoked_at IS NULL').bind(pair.session_hash,pair.user_id,now()).first();if(!valid)throw new HttpError(401,'PC 로그인이 끝났습니다. PC에서 다시 들어오세요.');}
+  return pair;
+}
+async function readyPair(c: Row, credentialId: string) {
+  const result=await db().prepare('UPDATE phone_pairs SET state=?,credential_id=?,user_id=? WHERE id=? AND state=? AND expires_at>?').bind('ready',credentialId,c.user_id,c.pair_id,'pending',now()).run();
+  if(!result.meta.changes)throw new HttpError(410,'QR 연결 시간이 끝났습니다. 새 QR을 띄워 다시 들어오세요.');
+}
+export async function phoneRoute(req: Request, action: string) {
+  try {
+    config(req);
+    if(req.method==='GET'&&action==='status') {
+      const id=new URL(req.url).searchParams.get('id')??'';const secret=cookie(req,PAIR_COOKIE);
+      if(!secret)throw new HttpError(401,'이 브라우저에서 만든 QR이 아닙니다.');
+      const pair=await db().prepare('SELECT state,expires_at FROM phone_pairs WHERE id=? AND pc_hash=?').bind(id,await hash(secret)).first<Row>();
+      if(!pair||pair.expires_at<=now())throw new HttpError(410,'QR이 만료됐습니다. 새 QR을 띄우세요.');
+      return json({state:pair.state,expiresAt:pair.expires_at});
+    }
+    checkOrigin(req);const input=await body(req);
+    if(req.method==='POST'&&action==='start') {
+      const s=await session(req,false);const mode=s?'add':input.mode==='signup'?'signup':'login';
+      const userHandle=s?.handle??handle(input.handle), id=crypto.randomUUID(),ticket=random(),pc=random(),expires=now()+5*60*1000;
+      const u=mode==='signup'?null:await db().prepare('SELECT id FROM passkey_users WHERE handle=?').bind(userHandle).first<Row>();
+      if(mode==='signup'&&await db().prepare('SELECT id FROM passkey_users WHERE handle=?').bind(userHandle).first())throw new HttpError(409,'이미 쓰는 별명입니다. 등록한 휴대폰으로 들어가기를 선택하세요.');
+      const name=mode==='login'?'':text(input.name,'패스키 이름'),storage=mode==='login'?'':text(input.storage,'저장 위치');
+      if(mode!=='login'&&!['구글 비밀번호 관리자','기기 자체','보안 키','기타 패스키 관리자'].includes(storage))throw new HttpError(400,'저장 위치를 선택하세요.');
+      await db().batch([
+        db().prepare('DELETE FROM phone_pairs WHERE expires_at<=? OR pc_hash=?').bind(now(),await hash(cookie(req,PAIR_COOKIE))),
+        db().prepare('INSERT INTO phone_pairs (id,ticket_hash,pc_hash,mode,user_id,handle,name,storage,session_hash,state,expires_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)').bind(id,await hash(ticket),await hash(pc),mode,s?.user_id??u?.id??crypto.randomUUID(),userHandle,name,storage,s?.hash??null,'pending',expires),
+      ]);
+      return json({pairId:id,phoneUrl:config(req).origin+'/phone-connect#ticket='+ticket,expiresAt:expires},200,[setCookie(req,PAIR_COOKIE,pc,300)]);
+    }
+    if(req.method==='POST'&&action==='info') {const p=await pairByTicket(input.pairTicket);return json({handle:p.handle,mode:p.mode,name:p.name,storage:p.storage,expiresAt:p.expires_at});}
+    if(req.method==='POST'&&action==='consume') {
+      const secret=cookie(req,PAIR_COOKIE);if(!secret)throw new HttpError(401,'이 브라우저에서 만든 QR이 아닙니다.');
+      const pair=await db().prepare('DELETE FROM phone_pairs WHERE id=? AND pc_hash=? AND state=? AND expires_at>? RETURNING *').bind(text(input.pairId,'QR 연결'),await hash(secret),'ready',now()).first<Row>();
+      if(!pair)throw new HttpError(401,'QR 인증이 완료되지 않았거나 이미 사용됐습니다.');
+      if(pair.mode==='add'){const s=await session(req);if(s!.hash!==pair.session_hash||s!.user_id!==pair.user_id)throw new HttpError(401,'PC 로그인이 바뀌었습니다. 다시 시작하세요.');}
+      return json({connected:true,user:{id:pair.user_id,handle:pair.handle}},200,[await createSession(req,pair.user_id,pair.credential_id),setCookie(req,PAIR_COOKIE,'',0)]);
+    }
+    if(req.method==='POST'&&action==='cancel') {const secret=cookie(req,PAIR_COOKIE);if(secret)await db().prepare('DELETE FROM phone_pairs WHERE pc_hash=?').bind(await hash(secret)).run();return json({cancelled:true},200,[setCookie(req,PAIR_COOKIE,'',0)]);}
+    throw new HttpError(405,'지원하지 않는 요청입니다.');
+  }catch(e){return failure(e);}
+}

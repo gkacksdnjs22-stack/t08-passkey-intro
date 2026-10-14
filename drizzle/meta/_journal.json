@@ -15,6 +15,13 @@
       "when": 1791939308382,
       "tag": "0001_amazing_makkari",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1791940174601,
+      "tag": "0002_many_jasper_sitwell",
+      "breakpoints": true
     }
   ]
 }
